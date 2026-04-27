@@ -19,8 +19,7 @@ public extension ClientSmallFileUploadable{
     ///     - filename: name of the file (with extension) that is going to be inject in request
     ///     - parameters: parameters for your request path
     ///     - queryItems: query items for your request
-    ///     - server: base address of your server
-    ///     - mode: .safe will make sure that you have send all required parameters
+    ///     - config: RequestConf object for this request
     static func upload<T:UpHttpClient>(metaData : InputData? ,
                                        data : Data,
                                        filename : FileName,

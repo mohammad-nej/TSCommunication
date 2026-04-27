@@ -3,7 +3,7 @@ import Foundation
 
 
 
-///Fundamentals of a route that is used by Server and Client
+///A route that can send/receive json to/from server
 ///
 /// A route can be created by conforming to this type:
 /// ```swift
@@ -19,13 +19,15 @@ import Foundation
 ///This will provide base information for TSClient and TSVapor packages to
 ///work with routes.
 
-public protocol HttpRoute: GetHttpRoute,Sendable {
+public protocol HttpRoute: GetHttpRoute,Sendable, IdentifiableRoute {
     associatedtype InputData : Codable
     
            
     static var contentType : ContentType { get }
     static var path: ServerPath { get }
     static var method : HttpMethod { get }
+    
+    init()
 }
 
 public extension HttpRoute{

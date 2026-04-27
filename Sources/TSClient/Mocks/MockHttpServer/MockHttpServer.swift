@@ -10,9 +10,9 @@ import TSShared
 
 
 
-///Mock an Http Sever for you.
+///A general purpose Http mock server
 ///
-///This is a general purpose HTTP Server mock that can answer to any route
+///This is mocked can be passed in to all routes:
 ///```swift
 ///let mock = MockHttpServer { data, req in
 ///    return (data,URLResponse())

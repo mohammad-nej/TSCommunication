@@ -11,7 +11,8 @@ import TSShared
 
 
 public extension MockHttpServer {
-    //config for this mock server
+    
+    ///A mock config for this mock server
     var config : RequestConfig<Self> {
         .init(server: .test, client: self)
     }

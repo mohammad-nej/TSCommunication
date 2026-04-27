@@ -8,7 +8,7 @@
 
 import Foundation
 
-///A protocol for http client that uploads data to server
+///A client that can upload data to server
 ///
 ///This is mainly used for testing your application
 public protocol UpHttpClient : _HttpClientable{

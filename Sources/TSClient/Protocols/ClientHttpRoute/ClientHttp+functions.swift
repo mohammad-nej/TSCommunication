@@ -19,6 +19,7 @@ public extension ClientHttpRoute{
     ///     - input: the input that you want to send to server
     ///     - parameters: if your server route has a parameter, you should pass them in here
     ///     - queryItems: query items in your request
+    ///     - config: RequestConf object for this request
     static  func send<T:UpHttpClient>(_ input : InputData, parameters : [String] = [], queryItems : [URLQueryItem] = [] ,config : RequestConfig<T>) async throws -> (OutputData,URLResponse) {
         
         
@@ -43,7 +44,7 @@ public extension ClientHttpRoute{
    
         //sending request
         
-        var encodedData = try encoder.encodeIfNeeded(input)
+        let encodedData = try encoder.encodeIfNeeded(input)
        
         
         //checking the size of data

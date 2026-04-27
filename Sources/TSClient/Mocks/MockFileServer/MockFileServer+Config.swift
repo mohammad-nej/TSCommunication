@@ -12,6 +12,7 @@ import TSShared
 
 public extension MockFileServer {
     
+    ///A mock config for this mock server
     var config : RequestConfig<Self> {
         return RequestConfig(server: .test, client: self)
     }

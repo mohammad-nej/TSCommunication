@@ -22,24 +22,29 @@ import TSShared
 ///    }
 ///}
 ///```
-///
-/// - important: MiddlewareBuilder will register routes in server, so avoid calling ``AddableRoute/addRoute(to:)`` on these routes again
-public struct MiddlewareBuilder {
+public final class MiddlewareBuilder {
     
-    public init(app : Application ){
-        self.application = app
+    public init(){
+       
     }
 
-
-    private let application : Application
+    private var innerBuilder : InnerMiddleWareBuilder? = nil
+    
 
     ///Provides you with a `InnerMiddleWareBuilder` object that lets you append middleware(s) to your route.
-    public func run(_ closure:  (inout InnerMiddleWareBuilder) -> Void){
+    public  func build(_ closure:  (inout InnerMiddleWareBuilder) -> Void){
         var innerBuilder = InnerMiddleWareBuilder(middlewares: [])
         
         closure(&innerBuilder)
-        
-        innerBuilder.attach(to: application, inherited: [])
-        
+        self.innerBuilder = innerBuilder
+    }
+    
+    func attach(to app : Application, previousIds : inout Set<RouteId>, duplicates : inout [RouteId] ){
+        if let innerBuilder{
+            innerBuilder.attach(to: app, inherited: [], previousIds: &previousIds, duplicates: &duplicates)
+        }else{
+            logger.warning("Middleware builder is empty, use `run` method first")
+        }
+            
     }
 }

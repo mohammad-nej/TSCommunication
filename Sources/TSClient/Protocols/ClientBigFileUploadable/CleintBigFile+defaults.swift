@@ -8,15 +8,15 @@ import TSShared
 import Foundation
 
 public extension ClientBigFileUploadable{
-    public static var encoder : JSONEncoder{
+    static var encoder : JSONEncoder{
         Coding.encoder
     }
     
-    public static var decoder : JSONDecoder{
+    static var decoder : JSONDecoder{
         Coding.decoder
     }
     
-    public static var method: HttpMethod { .post }
+    static var method: HttpMethod { .post }
     
     static var timeoutInterval : TimeInterval { 150 }
 }

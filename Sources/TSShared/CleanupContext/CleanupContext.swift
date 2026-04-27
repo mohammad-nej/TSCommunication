@@ -6,6 +6,7 @@
 //
 
 ///This object can be used to do clean ups in case of any  failure.
+///
 ///Clean up closures can be added using `add` function.  all closures added to the object
 ///will run in **REVERSE** order using `run` function.
 ///

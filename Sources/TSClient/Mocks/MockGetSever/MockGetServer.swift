@@ -11,9 +11,15 @@ import Foundation
 
 ///Mocks a GET only http server that can answer to download requests
 ///
-///This can be used to test your client app with out reaching out to server , or can be replaced by your server
-///if your user is offline for example
+///This can be used to test your client app with out reaching out to server
+///```swift
+///MockGetServer<String> { request in
+/// return ("data",URLResponse())
+///}
+///```
 public struct MockGetServer<O : Encodable >: GETHttpClient, Sendable {
+    
+   
     
     public var encoder : JSONEncoder
     
@@ -25,11 +31,13 @@ public struct MockGetServer<O : Encodable >: GETHttpClient, Sendable {
         return (data,response)
     }
 
+    ///Initializer with a closure to run
     public init(responds: @Sendable @escaping (URLRequest) async throws -> (O,URLResponse) ){
         self.download = responds
         self.encoder = JSONEncoder()
     }
     
+    ///Always returns the provided value
     public init(always value : O) where O : Sendable{
         self.download = { _ in
             return (value,URLResponse())

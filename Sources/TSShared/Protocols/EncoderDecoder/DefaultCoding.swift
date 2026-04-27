@@ -7,12 +7,12 @@
 import Foundation
 
 ///Default Encoder/Decoder of this package which is just a default JSONEncoder/JSONDecoder
-public struct DefaultCodingConfig : EncoderDecoder , Sendable {
+public struct DefaultCoding : EncoderDecoder , Sendable {
     public static let encoder: JSONEncoder = JSONEncoder()
     public static let decoder: JSONDecoder = JSONDecoder()
         
     public init() {}
 }
-public extension EncoderDecoder where Self == DefaultCodingConfig {
-    static var `default` : DefaultCodingConfig { DefaultCodingConfig() }
+public extension EncoderDecoder where Self == DefaultCoding {
+    static var `default` : DefaultCoding { DefaultCoding() }
 }

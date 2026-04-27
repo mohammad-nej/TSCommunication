@@ -8,12 +8,23 @@
 import VaporTesting
 import TSShared
 
+///Can be used to prepare your `Application` object for staring your tests.
+///
+///For example you can prepare your database in here
+///```swift
+///let prepare = { app in
+/// //prepare your db
+/// //do migrations
+///}
+///```
+/// - Important: All helpers in this target, will register your routes to server. don't use this closure for inserting your routes into your server.
+public typealias AppPreparationClosure = @Sendable (Application) async throws -> Void
 
 public extension TestingApplicationTester {
    
-    ///Convenient function for testing your app
+    ///Lets you test your routes
     ///
-    ///You can test your routes with ease :
+    /// You can test your routes with ease :
     ///```swift
     ///app.testing().test(MyRoute.self){request in
     /// let dto = MyRoute.InputData(...)

@@ -18,4 +18,5 @@ import TSShared
 public protocol VaporRespondable : GetHttpRoute where ClosureResponse : AsyncResponseEncodable {
     associatedtype ClosureResponse : VaporSendableMetatype
     static var closure : @Sendable (Vapor.Request) async throws -> ClosureResponse { get }
+    init()
 }

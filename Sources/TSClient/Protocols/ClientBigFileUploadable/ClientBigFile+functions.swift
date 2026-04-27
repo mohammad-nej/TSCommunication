@@ -15,8 +15,7 @@ public extension ClientBigFileUploadable{
     ///     - fileUrl: url to the file that you want to stream
     ///     - parameters: if your server route has a parameter, you should pass them in here
     ///     - queryItems: query items in your request
-    ///     - server: base address of your server
-    ///     - mode: the mode that is used to validate your url
+    ///     - config: RequestConf object for this request
     static func upload<T:UploadHttpClient>(fileUrl: URL,
                        parameters : [String] = [] ,
                        queryItems : [URLQueryItem] = [],

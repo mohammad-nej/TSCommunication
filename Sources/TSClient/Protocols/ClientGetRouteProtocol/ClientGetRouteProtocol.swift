@@ -9,10 +9,17 @@ import TSShared
 import Foundation
 
 
-///Route for Get request that doesn't have InputData at all
+///A route that doesn't upload any data to server, e.g. GET request
+///
+///By conforming to this protocol you can download data from server using get function
+///```swift
+///let (result,response) =
+/// try await MyGetRoute
+///         .get(paramters:[],config:.myConfig)
+///```
 public protocol ClientGetRouteProtocol : GetHttpRoute {
     
-    associatedtype Coding : EncoderDecoder = DefaultCodingConfig
+    associatedtype Coding : EncoderDecoder = DefaultCoding
     
     static func get<T:GETHttpClient>(parameters : [String], queryItems : [String : String], config : RequestConfig<T>  ) async throws -> (OutputData,URLResponse)
     

@@ -13,8 +13,7 @@ public extension ClientGetRouteProtocol{
     /// - Parameters:
     ///     - parameters: if your server route has a parameter, you should pass them in here
     ///     - queryItems: query items in your request
-    ///     - server: base address of your server
-    ///     - mode: the mode that is used to validate your url
+    ///     - config: RequestConf object for this request
     static func get<T:GETHttpClient>(parameters : [String],queryItems : [URLQueryItem] = [], config : RequestConfig<T> ) async throws -> (OutputData,URLResponse){
         guard Self.method == .get else { fatalError("HTTPMethod is not .get") }
         

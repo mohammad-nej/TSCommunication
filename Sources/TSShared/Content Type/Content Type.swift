@@ -6,6 +6,8 @@
 //
 
 ///Content type of a request that is being sent to the server
+///
+///This is a simple type for convenience
 public struct ContentType: RawRepresentable, ExpressibleByStringLiteral, Sendable, Equatable , Hashable {
     
     public let rawValue: String

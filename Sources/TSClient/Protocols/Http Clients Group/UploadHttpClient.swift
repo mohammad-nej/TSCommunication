@@ -8,7 +8,7 @@
 
 import Foundation
 
-///Http client that support streaming a file to server
+///a client that support streaming a file to server
 public protocol UploadHttpClient : _HttpClientable {
     func upload(for: URLRequest, fromFile: URL,delegate: (any URLSessionTaskDelegate)?) async throws -> (Data,URLResponse)
 }

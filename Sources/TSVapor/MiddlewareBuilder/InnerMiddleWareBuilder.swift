@@ -6,14 +6,17 @@
 //
 import TSShared
 import Vapor
+import OSLog
 
+
+public typealias Groupable = GetHttpRoute  & VaporRespondable
 
 ///Can be used to group routes and add middleware to them.
 ///
 ///This type can't be initialized directly, use  ``MiddlewareBuilder``  instead.
 public struct InnerMiddleWareBuilder {
     
-    public typealias Groupable = HttpRoute  & VaporRespondable  & AddableRoute
+    
     
     init(middleware : (any Middleware) ){
         self.middleWares = [middleware]
@@ -23,17 +26,17 @@ public struct InnerMiddleWareBuilder {
         self.middleWares = middlewares
     }
     
-    private(set) var routes : [(any Groupable)] = []
+    private(set) var routes : [any Groupable.Type] = []
     private(set) var middleWares : [any Middleware] = []
     private(set) var innerGroup : [InnerMiddleWareBuilder] = []
     
     ///Add a route to this group
-    public mutating func add(route : (any Groupable)){
+    public mutating func add(route : any Groupable.Type){
         routes.append(route)
     }
     
     ///Adds all the routes to the group
-    public mutating func add(routes : [(any Groupable)]){
+    public mutating func add(routes : [any Groupable.Type]){
         self.routes.append(contentsOf: routes)
     }
     
@@ -72,15 +75,25 @@ public struct InnerMiddleWareBuilder {
         self.middleWares.append(contentsOf: middlewares)
     }
     
-    func attach(to app: Application,inherited: [any Middleware]){
+    func attach(to app: Application,inherited: [any Middleware],previousIds : inout Set<RouteId>, duplicates : inout [RouteId]){
         let combined = inherited + middleWares
         app.group(combined){ vaporGroup in
-            for route in routes{
+            for routeType in routes{
+                let route = routeType.init()
+                let id = routeType.routeId
+                let (inserted , _ ) = previousIds.insert(id)
+                
+                if !inserted{
+                    logger.warning("Route with id: \(id.description) was added more than once. Only the first addition will be used.")
+                    duplicates.append(routeType.routeId)
+                    continue
+                }
+                
                 vaporGroup.add(route)
             }
         }
         for group in innerGroup{
-            group.attach(to: app,inherited: combined)
+            group.attach(to: app,inherited: combined, previousIds: &previousIds, duplicates: &duplicates)
         }
         
         

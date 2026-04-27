@@ -10,16 +10,25 @@ import TSShared
 
 
 
-///For routes that use multipart to send their request
+///A routes that use multipart to send its requests
 ///
 ///This can be used by routes that send a small file with some meta data to server.
 ///
-///This method will send the entire file in one request, while this is not a problem for smaller files, if you file
+///This protocol will send the entire file in **one** multipart request, while this is not a problem for smaller files, if you file
 ///is big consider using ``ClienBigFileUploadable`` instead
+///
+///By conforming to this protocol you will get access to `upload` function:
+///```swift
+///try await UploadTextFile
+///             .upload(metaData: "test",
+///                     data: fileData,
+///                     filename : "config.txt",
+///                     config: .myConfig)
+///```
 public protocol  ClientSmallFileUploadable : FileUploadable ,ClientHttpRoute{
     
     ///Responsible for Encoding/Decoding your data
-    associatedtype Coding : EncoderDecoder = DefaultCodingConfig
+    associatedtype Coding : EncoderDecoder = DefaultCoding
     
     static var timeoutInterval: TimeInterval { get }
     

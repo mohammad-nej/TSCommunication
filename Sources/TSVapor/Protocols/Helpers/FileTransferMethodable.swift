@@ -9,6 +9,7 @@ import TSShared
 import Vapor
 
 
+///Method that is used by vapor to collect body of request
 public protocol FileTransferMethodable {
     static var transferMethod: FileTransferMethod { get }
 }

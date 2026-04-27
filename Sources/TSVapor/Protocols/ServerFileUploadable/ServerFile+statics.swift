@@ -1,38 +1,15 @@
 //
-//  StreamableServerRouteProtocol.swift
-//  Whisper
+//  ServerFile+statics.swift
+//  TSCommunication
 //
-//  Created by MohammavDev on 4/8/26.
+//  Created by MohammavDev on 4/27/26.
 //
 
-import Vapor
+import Foundation
 import TSShared
+import Vapor
 import NIOCore
-
-
-
-///This protocol can be used for routes that need to upload a large payload to server
-///
-///By extending to your `RouteProtocol` to this protocol:
-///
-///1.Your default http method will be set to `.post`, you can override this value in your concrete type if you want
-///
-///2. You will get access to some helper functions like, `getFileAndInputData(from:Request,..)`
-///
-///Example :
-///```swift
-///extension UploadFileRoute : UploadableServerRoute {}
-///```
- public protocol ServerFileUploadable: ServerRouteProtocol,FileUploadable ,
-                                                FileTransferMethodable ,
-                                                AddableRoute,
-                                                VaporRespondable {}
-
-public extension ServerFileUploadable {
-    
-    //Default is set to post , you can override it by defining a value in your concrete type
-    static var method: HttpMethod { .post }
-    
+public extension ServerFileUploadable{
     ///Extracts the inputData and file that was uploaded to server from the request
     ///
     ///If you have used `TSClient` package to upload your file to sever using `sendFile(metaData:InputData,..)`, you can get your Data and metaData sent with it
@@ -72,23 +49,29 @@ public extension ServerFileUploadable {
         
     }
     
+    ///Write the file that is sent within this request directly to disk
+    ///
+    ///This method will adapt depending on your routes `.transferMethod` variable.
     static func writeFileToDisk(from request : Request, path : String ,using decoder : JSONDecoder ) async throws {
         
         switch Self.transferMethod {
         case .stream:
             let fileIO = request.application.fileio
             let stream = request.body
-              let handle = try NIOFileHandle(path: path, mode: .write, flags: .allowFileCreation())
-
-              for try await chunk in stream {
-                fileIO.write(
-                    fileHandle: handle,
-                      buffer: chunk,
-                      eventLoop: request.eventLoop
-                  )
-              }
-
-              try handle.close()
+            let handle = try NIOFileHandle(path: path, mode: .write, flags: .allowFileCreation())
+            do{
+                for try await chunk in stream {
+                    _ = fileIO.write(
+                        fileHandle: handle,
+                        buffer: chunk,
+                        eventLoop: request.eventLoop)
+                }
+                
+                try handle.close()
+            }catch{
+                try handle.close()
+                throw error
+            }
         case .collect(_):
             fallthrough
         case .default:
@@ -97,10 +80,4 @@ public extension ServerFileUploadable {
         }
         
     }
-        
 }
-
-public extension ServerFileUploadable {
-    static var transferMethod: FileTransferMethod { .collect(.mb(10)) }
-}
-

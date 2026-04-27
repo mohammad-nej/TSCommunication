@@ -10,6 +10,8 @@ import TSShared
 import Foundation
 
 public extension MockFileServer {
+    
+    ///Creates a mock  that runs a closure upon being called
     init<T : ClientBigFileUploadable>(for route : T.Type ,
                                              uploadFile: @Sendable @escaping (URL,URLRequest) async throws -> (Out, URLResponse)
     ) where T.OutputData == Out{
@@ -17,7 +19,7 @@ public extension MockFileServer {
         self.encoder = T.encoder
     }
     
-    
+    ///Always returns the provided value
     init<T:ClientBigFileUploadable>(for route : T.Type,
                             always value : Out) where Out : Sendable{
      

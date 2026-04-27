@@ -9,20 +9,21 @@ import TSShared
 
 
 
-///Basic route that can send a json payload to server and return a  json/response in return
+///A route that can send a json payload to server and return a  json/response in return
 ///
 ///This should be your go to option for all HttpMethods except GET.
 ///
 ///if you want to send a GET request to server use ``ClientGetRouteProtocol`` instead.
 ///
-///assuming that you have an HttpRoute defined on your shared target, you can simply extend your route this protocol
+///By conforming to this protocol you will get access to `send` function:
 ///```swift
-///extension UploadUserDataRoute : ClientHttpRoute {}
+///try await AddContactRoute
+///     .send(contactDTO, config : .myConfig)
 ///```
 public protocol ClientHttpRoute : HttpRoute, EncoderDecoder {
     
     
-    associatedtype Coding : EncoderDecoder = DefaultCodingConfig
+    associatedtype Coding : EncoderDecoder = DefaultCoding
     
     static func send<T:UpHttpClient>(_ data : InputData , parameters : [String], queryItems : [String : String] ,config : RequestConfig<T>) async throws -> (OutputData,URLResponse)
     

@@ -8,6 +8,7 @@
 import Foundation
 
 
+///client that can handle all kinds of requests
 public typealias HttpClient = UpHttpClient & GETHttpClient & UploadHttpClient
 
 

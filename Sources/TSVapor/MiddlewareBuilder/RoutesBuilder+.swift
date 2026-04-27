@@ -10,7 +10,7 @@ import TSShared
 
 extension RoutesBuilder{
     @discardableResult
-    func add<T:HttpRoute>(_ route : T) -> Route where T : VaporRespondable{
+    func add<T:GetHttpRoute>(_ route : T) -> Route where T : VaporRespondable{
 
         return self.on(T.method.asVaporHTTPMethod,
                 T.path.vaporComponents,

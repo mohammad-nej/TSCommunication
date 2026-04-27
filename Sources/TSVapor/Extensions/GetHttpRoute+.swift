@@ -23,6 +23,23 @@ import Vapor
 /// route3]
 ///routes.forEach{$0.addRoute(to:app)
 ///```
-public protocol AddableRoute {
-    func addRoute(to : Application) throws
+//public protocol AddableRoute {
+////    func addRoute(to : Application) throws
+//}
+
+public typealias AddingCapableRoute = VaporRespondable & FileTransferMethodable
+internal extension GetHttpRoute where Self : AddingCapableRoute{
+    
+    static func addRoute(to application : Application){
+      
+        let components = Self.path.vaporComponents
+        let method = Self.method
+        
+        application.on(method.asVaporHTTPMethod,
+                       components,
+                       body: Self.transferMethod.toVaporSteamStrategy,
+                       use: Self.closure)
+    }
+    
+
 }

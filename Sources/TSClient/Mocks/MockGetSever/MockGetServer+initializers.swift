@@ -11,7 +11,7 @@ import Foundation
 
 public extension MockGetServer{
     
-    ///A mock GET server that can responds to clients
+    ///Creates a mock  that runs a closure upon being called
     init<T:ClientGetRouteProtocol>(for route : T.Type,
                              responds : @Sendable @escaping (URLRequest) async throws -> (O,URLResponse) ) where O == T.OutputData{
         

@@ -23,7 +23,7 @@ import Foundation
 /////This initializer will bypass validation, might crash at runtime
 /////if your input is not in the correct formation (empty string for example )
 ///let filename = Filename(withUnsafeName: "myfile.txt)
-///
+///```
 public struct FileName : Sendable , Hashable , Equatable, Codable{
     
     
@@ -99,6 +99,7 @@ public extension FileName {
         .init(withUnsafeName: fullname)
     }
     
+    ///Creates a ".txt" file with your provided name
     static func txt(_ name: String) throws -> Self {
         try .init(name:"\(name).txt")
     }
