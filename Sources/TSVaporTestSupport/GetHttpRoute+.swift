@@ -21,13 +21,52 @@ public extension GetHttpRoute {
     }
 }
 
-public extension HttpRoute{
+
+
+
+
+//since all routes conform to GetHttpRoute , this extension will be available to all routes
+public extension GetHttpRoute where Self : FileTransferMethodable , Self : VaporRespondable {
     
-    ///Injects your InputData into the request content
-    static func insert(_ input : Self.InputData, in  request :  inout TestingHTTPRequest, using encoder : (any ContentEncoder)? = nil) throws where Self.InputData : Content  {
-        if let encoder{
-            try request.content.encode(input, using: encoder)
+    ///Convenient function for testing your app
+    ///
+    ///You can test your routes with ease :
+    ///```swift
+    ///let prepare : AppPreparationClosure = { app in
+    /// //setup your db , ...
+    ///}
+    ///MyRoute.test(prepare:prepare){ req in
+    ///}afterResponse:{ response in
+    ///}
+    ///```
+    static func test(
+        parameters : [String] = [],
+        headers : HTTPHeaders = [:],
+        body : ByteBuffer? = nil,
+        mode : URLCreationMode = .safe,
+        prepare : @escaping AppPreparationClosure ,
+        beforeRequest: (inout TestingHTTPRequest) async throws -> () = { _ in },
+        afterResponse: (TestingHTTPResponse) async throws -> () = { _ in }) async throws
+    
+    {
+        let serverTester = ServerTest(routes: [Self.self], builders: [])
+        serverTester.preparation = prepare
+        try await serverTester.withApp { app in
+            
+            try await app.testing().test(
+                Self.self,
+                parameters: parameters,
+                headers: headers,
+                body: body,
+                mode:mode,
+                beforeRequest: beforeRequest,
+                afterResponse: afterResponse
+            )
+            
         }
-        try request.content.encode(input)
+
     }
+
+    
+    
 }

@@ -14,13 +14,19 @@ import TSShared
 ///
 ///You can easily add Middleware(s) to your route using this builder:
 ///```swift
-///MiddleWareBuilder(app: application)
-///    .run{ group in
+///let builder = MiddleWareBuilder(app: application)
+///    .build{ group in
 ///        group.add(middleware:TestMiddleWare2())
 ///        group.group(TestMiddleWare()) { innerGroup in
 ///             innerGroup.add(route:route)
 ///    }
 ///}
+///```
+///Once you have created your builders you can add them to your RouteRegistrar
+///```swift
+///let registrar = RouteRegistrar(routes:[],builders:[builder])
+///
+///try registrar.register(to:app) //At this point, your routes and middlewares will be attached
 ///```
 public final class MiddlewareBuilder {
     
