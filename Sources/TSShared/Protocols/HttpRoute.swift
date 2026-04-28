@@ -18,7 +18,6 @@ import Foundation
 ///```
 ///This will provide base information for TSClient and TSVapor packages to
 ///work with routes.
-
 public protocol HttpRoute: GetHttpRoute,Sendable, IdentifiableRoute {
     associatedtype InputData : Codable
     

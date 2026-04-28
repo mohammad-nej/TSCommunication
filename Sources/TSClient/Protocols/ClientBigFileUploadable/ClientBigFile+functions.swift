@@ -20,17 +20,15 @@ public extension ClientBigFileUploadable{
                        parameters : [String] = [] ,
                        queryItems : [URLQueryItem] = [],
                        config: RequestConfig<T>
-    ) async throws -> (OutputData,URLResponse) {
+    ) async throws -> ServerResponse<Self> {
         
         let url = try Self.path.createURL(parameters: parameters, queryItems: queryItems, server: config.server, mode: config.urlSafetyCheckMode)
         
         let request = URLRequest(url: url,timeoutInterval: Self.timeoutInterval)
         
         let (data , response) = try await config.httpClient.upload(for: request, fromFile: fileUrl,delegate: config.delegate)
-        
-        
-        let decoded = try Self.decoder.decodeIfNeeded(OutputData.self, from: data)
-        return (decoded,response)
+   
+        return .init(Self.self, data: data, response: response)
      
     }
     
@@ -39,7 +37,7 @@ public extension ClientBigFileUploadable{
     static func upload<T:UploadHttpClient>(fileUrl: URL, parameters : [String] = [] ,
                        queryItems : [String:String] = [:],
                        config: RequestConfig<T>
-    ) async throws -> (OutputData,URLResponse) {
+    ) async throws -> ServerResponse<Self> {
         let queryItems = queryItems.toQueryItem
         return try await upload(fileUrl: fileUrl,
                                 parameters: parameters,

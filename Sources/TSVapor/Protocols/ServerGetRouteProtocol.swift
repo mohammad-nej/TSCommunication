@@ -10,19 +10,29 @@ import TSShared
 
 
 ///This can be used to create GET request
-///
-///This protocol just sets your InputData to `NoData`, since GET request can't have any content
-public protocol ServerGetRouteProtocol : GetHttpRoute,VaporRespondable, FileTransferMethodable  where ClosureResponse == OutputData{
+
+public protocol ServerGetRouteProtocol : GetHttpRoute,InnerMiddewareContainer,BuildableBlock,VaporRespondable, FileTransferMethodable  where ClosureResponse == OutputData{
 }
 
 extension ServerGetRouteProtocol {
     
     ///We have to define on this type.
     static var transferMethod : FileTransferMethod { .default }
-
-}
-
-public extension ServerGetRouteProtocol {
     
     static var method: HttpMethod { .get }
+    
 }
+
+
+extension ServerGetRouteProtocol{
+    public var innerMiddleware: InnerMiddleWareBuilder{
+        var builder: InnerMiddleWareBuilder = .init()
+        builder.routes = [Self.self]
+        return builder
+    }
+    
+    public var routes: [any Groupable.Type] { [Self.self] }
+}
+
+
+

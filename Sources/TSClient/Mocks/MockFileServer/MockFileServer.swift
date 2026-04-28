@@ -29,7 +29,7 @@ public struct MockFileServer<Out : Encodable> : Sendable , UploadHttpClient{
     
     public func upload(for request : URLRequest, fromFile url: URL, delegate: (any URLSessionTaskDelegate)?) async throws -> (Data, URLResponse) {
         let (out,response) = try await uploadFile(url,request)
-        let outputData = try encoder.encodeIfNeeded(out)
+        let outputData = try encoder.encode(out)
         return (outputData,response)
     }
  

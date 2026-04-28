@@ -9,9 +9,7 @@
 import Foundation
 
 
-public enum URLConversionError: Error {
-    case insufficientAmountOfParameters, extraAmountOfParameters
-}
+
 
 ///Indicates whether you want strict checking or not?
 ///
@@ -36,8 +34,6 @@ public extension ServerPath {
     
     ///Creates a valid URLComponent string from itself by inserting parameters in the string
     ///
-    /// By default this function will makes sure that you have passed the right amount of parameters. However, you can disable this
-    /// behavior by pass ``URLCreationMode.unsafe`` to it's ``mode`` input value.
     /// - Warning: URLCreationMode.unsafe will crash at runtime if you don't pass enough amount of parameters.
     func urlValidPath(with parameters : [String], mode : URLCreationMode) throws -> String {
         var urlPath: [String] = []
@@ -69,6 +65,8 @@ public extension ServerPath {
                 }
             }
         }
+        
+        
         var parameterIndex = 0
         
         for part in self.parts {

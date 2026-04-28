@@ -8,13 +8,6 @@
 import TSShared
 import Vapor
 
-
-public extension Array where Element == PathComponent{
-    var pathString : String{
-        self.map(\.description).joined(separator: "/")
-    }
-}
-
 public extension HttpMethod {
     ///Convert TSShared.HttpMethod to to vapors HTTPMethod
     var asVaporHTTPMethod: HTTPMethod {

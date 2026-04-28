@@ -7,6 +7,7 @@ struct MySampleRoute : HttpRoute {
     
     typealias OutputData = String
     
+    
     static let path: TSShared.ServerPath = "user"
     
     static let method: TSShared.HttpMethod = .get
@@ -17,6 +18,8 @@ struct MySampleRoute : HttpRoute {
 
 @Test func fileNameTests() async throws {
     let filename : FileName = "myfile.txt"
+    
+    
     
     #expect(filename.fullname == "myfile.txt")
     #expect(filename.extension == "txt")
@@ -37,16 +40,16 @@ struct MySampleRoute : HttpRoute {
     #expect(unsafe.extension == "txt")
     #expect(unsafe.name == "unsafeFilename")
     
-    #expect(throws: FileName.FileNameError.empty){
+    #expect(throws: FileNameError.empty){
         try FileName(name:"")
         
     }
     
-    #expect(throws: FileName.FileNameError.noExtension){
+    #expect(throws: FileNameError.noExtension){
         try FileName(name:"mysample")
     }
     
-    #expect(throws: FileName.FileNameError.specialCharacter) {
+    #expect(throws: FileNameError.specialCharacter) {
         try FileName(name:"m/nae.txt")
     }
 }

@@ -9,7 +9,7 @@ import TSShared
 import Vapor
 
 ///Used for routes that let clients download a large file into their devices
-public protocol ServerFileDownloadable : FileDownloadable,VaporRespondable, FileTransferMethodable where OutputData == Data, ClosureResponse == Response{
+public protocol ServerFileDownloadable : InnerMiddewareContainer,BuildableBlock,FileDownloadable,VaporRespondable, FileTransferMethodable where OutputData == Data, ClosureResponse == Response{
     
 }
 
@@ -21,5 +21,14 @@ extension ServerFileDownloadable{
         let response = try await request.fileio.asyncStreamFile(at: path.path())
         response.headers.add(name: .contentType, value: "application/octet-stream")
         return response
+    }
+    
+    public var routes: [any Groupable.Type] { [Self.self] }
+    
+    public var innerMiddleware: InnerMiddleWareBuilder {
+        var object = InnerMiddleWareBuilder()
+        object.routes = [Self.self]
+        return object
+        
     }
 }

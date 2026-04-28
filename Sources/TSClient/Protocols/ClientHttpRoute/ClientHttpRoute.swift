@@ -25,9 +25,9 @@ public protocol ClientHttpRoute : HttpRoute, EncoderDecoder {
     
     associatedtype Coding : EncoderDecoder = DefaultCoding
     
-    static func send<T:UpHttpClient>(_ data : InputData , parameters : [String], queryItems : [String : String] ,config : RequestConfig<T>) async throws -> (OutputData,URLResponse)
+    static func send<T:UpHttpClient>(_ data : InputData , parameters : [String], queryItems : [String : String] ,config : RequestConfig<T>) async throws -> ServerResponse<Self>
     
-    static func send<T:UpHttpClient>(_ data : InputData, parameters : [String], queryItems : [URLQueryItem] ,config : RequestConfig<T>) async throws -> (OutputData,URLResponse)
+    static func send<T:UpHttpClient>(_ data : InputData, parameters : [String], queryItems : [URLQueryItem] ,config : RequestConfig<T>) async throws -> ServerResponse<Self>
     
     static var timeoutInterval : TimeInterval? { get }
 }

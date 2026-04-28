@@ -13,8 +13,8 @@ public typealias Groupable = GetHttpRoute  & VaporRespondable
 
 ///Can be used to group routes and add middleware to them.
 ///
-///This type can't be initialized directly, use  ``MiddlewareBuilder``  instead.
-public struct InnerMiddleWareBuilder {
+///This type can't be initialized directly, use  ``RouteInserter``  instead.
+ public struct InnerMiddleWareBuilder : BuildableBlock {
     
     
     
@@ -26,9 +26,9 @@ public struct InnerMiddleWareBuilder {
         self.middleWares = middlewares
     }
     
-    private(set) var routes : [any Groupable.Type] = []
-    private(set) var middleWares : [any Middleware] = []
-    private(set) var innerGroup : [InnerMiddleWareBuilder] = []
+    public var routes : [any Groupable.Type] = []
+    public var middleWares : [any Middleware] = []
+    var innerGroup : [InnerMiddleWareBuilder] = []
     
     ///Add a route to this group
     public mutating func add(route : any Groupable.Type){

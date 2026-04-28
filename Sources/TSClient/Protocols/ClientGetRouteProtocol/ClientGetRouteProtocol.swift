@@ -17,13 +17,13 @@ import Foundation
 /// try await MyGetRoute
 ///         .get(paramters:[],config:.myConfig)
 ///```
-public protocol ClientGetRouteProtocol : GetHttpRoute {
+public protocol ClientGetRouteProtocol : GetHttpRoute, EncoderDecoder {
     
     associatedtype Coding : EncoderDecoder = DefaultCoding
     
-    static func get<T:GETHttpClient>(parameters : [String], queryItems : [String : String], config : RequestConfig<T>  ) async throws -> (OutputData,URLResponse)
+    static func get<T:GETHttpClient>(parameters : [String], queryItems : [String : String], config : RequestConfig<T>  ) async throws -> ServerResponse<Self>
     
-    static func get<T:GETHttpClient>(parameters : [String],queryItems : [URLQueryItem], config : RequestConfig<T> ) async throws -> (OutputData,URLResponse)
+    static func get<T:GETHttpClient>(parameters : [String],queryItems : [URLQueryItem], config : RequestConfig<T> ) async throws -> ServerResponse<Self>
     
     static var timeoutInterval : TimeInterval? { get }
 }

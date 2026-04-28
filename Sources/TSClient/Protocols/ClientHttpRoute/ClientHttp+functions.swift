@@ -20,7 +20,7 @@ public extension ClientHttpRoute{
     ///     - parameters: if your server route has a parameter, you should pass them in here
     ///     - queryItems: query items in your request
     ///     - config: RequestConf object for this request
-    static  func send<T:UpHttpClient>(_ input : InputData, parameters : [String] = [], queryItems : [URLQueryItem] = [] ,config : RequestConfig<T>) async throws -> (OutputData,URLResponse) {
+    static  func send<T:UpHttpClient>(_ input : InputData, parameters : [String] = [], queryItems : [URLQueryItem] = [] ,config : RequestConfig<T>) async throws -> ServerResponse<Self> {
         
         
         //creating url
@@ -43,8 +43,7 @@ public extension ClientHttpRoute{
         request.setValue(self.contentType.rawValue, forHTTPHeaderField: "Content-Type")
    
         //sending request
-        
-        let encodedData = try encoder.encodeIfNeeded(input)
+        let encodedData = try encoder.encode(input)
        
         
         //checking the size of data
@@ -56,10 +55,7 @@ public extension ClientHttpRoute{
         //uploading
         let (data , response) = try await config.httpClient.upload(for: request, from: encodedData, delegate: config.delegate)
     
-    
-        
-        let decoded = try Self.decoder.decodeIfNeeded(OutputData.self, from: data)
-        return (decoded,response)
+        return .init(Self.self, data: data, response: response)
         
         
     }
@@ -72,7 +68,7 @@ public extension ClientHttpRoute{
     ///  - queryItems: query items in your request
     ///  - server: base address of your server
     ///  - mode: the mode that is used to validate your url
-    static func send<T:UpHttpClient>(_ data : InputData, parameters : [String] = [], queryItems : [String : String] = [:] , config : RequestConfig<T>) async throws -> (OutputData,URLResponse) {
+    static func send<T:UpHttpClient>(_ data : InputData, parameters : [String] = [], queryItems : [String : String] = [:] , config : RequestConfig<T>) async throws -> ServerResponse<Self> {
         let items = queryItems.toQueryItem
         return try await send(
             data,

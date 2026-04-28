@@ -14,7 +14,7 @@ public extension ClientGetRouteProtocol{
     ///     - parameters: if your server route has a parameter, you should pass them in here
     ///     - queryItems: query items in your request
     ///     - config: RequestConf object for this request
-    static func get<T:GETHttpClient>(parameters : [String],queryItems : [URLQueryItem] = [], config : RequestConfig<T> ) async throws -> (OutputData,URLResponse){
+    static func get<T:GETHttpClient>(parameters : [String],queryItems : [URLQueryItem] = [], config : RequestConfig<T> ) async throws -> ServerResponse<Self>{
         guard Self.method == .get else { fatalError("HTTPMethod is not .get") }
         
         let url = try Self.path.createURL(parameters: parameters,
@@ -29,8 +29,8 @@ public extension ClientGetRouteProtocol{
         }
         
         let (data, response) = try await config.httpClient.data(for: request, delegate: config.delegate)
-        let decoded = try Self.decoder.decodeIfNeeded(OutputData.self, from: data)
-        return (decoded,response)
+//        let decoded = try Self.decoder.decodeIfNeeded(OutputData.self, from: data)
+        return  .init(Self.self,data: data, response: response)
         
     }
     
@@ -41,7 +41,7 @@ public extension ClientGetRouteProtocol{
     ///     - queryItems: query items in your request
     ///     - server: base address of your server
     ///     - mode: the mode that is used to validate your url
-    static func get<T:GETHttpClient>(parameters : [String],queryItems : [String : String],config : RequestConfig<T> ) async throws -> (OutputData,URLResponse){
+    static func get<T:GETHttpClient>(parameters : [String],queryItems : [String : String],config : RequestConfig<T> ) async throws -> ServerResponse<Self>{
         
         let items = queryItems.toQueryItem
         return try await get(parameters: parameters,

@@ -16,22 +16,20 @@ import Foundation
 /// try await MyBiGFileRoute
 ///     .upload(fileUrl:url,config:.myconfig)
 ///```
-public protocol ClientBigFileUploadable :  GetHttpRoute{
+public protocol ClientBigFileUploadable :  GetHttpRoute, EncoderDecoder{
     associatedtype Coding : EncoderDecoder = DefaultCoding
     static func upload<T:UploadHttpClient>(fileUrl: URL, parameters : [String],
                                            queryItems : [String:String] ,
                                            config: RequestConfig<T>
-    ) async throws -> (OutputData,URLResponse)
+    ) async throws -> ServerResponse<Self>
     
     static func upload<T:UploadHttpClient>(fileUrl: URL, parameters : [String],
                                            queryItems : [URLQueryItem] ,
                                            config: RequestConfig<T>
-    ) async throws -> (OutputData,URLResponse)
+    ) async throws -> ServerResponse<Self>
     
     
     static var timeoutInterval : TimeInterval { get }
 }
 
 
-
-protocol SnakeCodingGetHttp : ClientGetRouteProtocol where Coding == SnakeCaseCoding {}

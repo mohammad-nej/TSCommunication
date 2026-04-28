@@ -38,6 +38,8 @@ extension RoutesTests {
     
     ///Get Id route
     struct GetId : ServerGetRouteProtocol {
+        
+        
         static var closure: @Sendable (Vapor.Request) async throws -> UUID {
             return { req in
                 guard let id =  req.parameters.get("id",as: UUID.self) else {

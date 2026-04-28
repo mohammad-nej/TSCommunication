@@ -17,9 +17,63 @@ import Vapor
 @Suite("Testing different routes to a server")
 struct RoutesTests {
     
+//    struct Builder {
+//        private let registration : RouteRegistrar
+//        
+//        @discardableResult
+//        init(app:Application, @RouteBuilderRB _ closure : () -> RouteRegistrar) throws{
+//            self.registration = closure()
+//            try registration.register(on: app)
+//        }
+//        
+//        func registre(on app: Application) throws{
+//            try registration.register(on: app)
+//        }
+//    }
+    
     let routes : [any AddingCapableRoute.Type] = [GetId.self, EchoRoute.self, DownloadFile.self , UploadFile.self]
     
     let prepare : AppPreparationClosure = { _ in }
+    
+    
+    
+    @Test("result builder")
+    func resultBuilder() async throws{
+        let tester = ServerTest(routes: [], builders: [])
+        try await tester.withApp{ app in
+            
+            
+            let all = try RouteInserter(to: app) {
+                With(middlewares: [TestMiddleWare(),TestMiddleWare2()]) {
+                    GetId()
+                    With(middlewares: [TestMiddleWare2()]) {
+                        UploadFile()
+                    }
+                    
+                }
+                DownloadFile()
+            }
+            
+            #expect(all.registrar.builders.count == 1)
+            let inners = all.registrar.builders.first!.innerBuilder
+            #expect(inners[0].middleWares.count == 2)
+            #expect(inners[1].middleWares.count == 0)
+            
+            let firstLayer = inners[0]
+            
+            #expect(firstLayer.innerGroup.count == 1)
+            #expect(firstLayer.routes.count == 1)
+            #expect(firstLayer.routes.first!.self is GetId.Type)
+            
+            let secondLayer = firstLayer.innerGroup.first!
+            #expect(secondLayer.middleWares.count == 1)
+            #expect(secondLayer.routes.count == 1)
+            #expect(secondLayer.routes.first!.self is UploadFile.Type)
+            
+        }
+    }
+    
+ 
     
     @Test("A get request from out server")
     func getRequest() async throws {
@@ -66,7 +120,7 @@ struct RoutesTests {
         }afterResponse: { response in
             try #require(response.status == .ok)
             
-            let file = DownloadFile.output(from: response)
+            let file = try DownloadFile.output(from: response)
             
             let value = String(data:file,encoding: .utf8)
             #expect(value == fileText)

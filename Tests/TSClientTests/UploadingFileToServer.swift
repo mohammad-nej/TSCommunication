@@ -59,18 +59,18 @@ struct RequestSender {
     @Test("Get request from server")
     func sendRequests() async throws {
         
-        let (result,_) = try await SampleGetRoute.get(parameters: [],config: SampleGetRoute.mockConfig(always: true) )
+        let result = try await SampleGetRoute.get(parameters: [],config: SampleGetRoute.mockConfig(always: true)).asOutput
         #expect(result)
         
         #expect(FileUploadePath.method == .post)
-        let (uploadResult, _) = try await FileUploadePath.upload(metaData: "this is test",
+        let uploadResult = try await FileUploadePath.upload(metaData: "this is test",
                                                                  data: "test".data(using: .utf8)!,
                                                                  filename: "test.txt",
-                                                                 config: FileUploadePath.mockConfig(always: true))
+                                                            config: FileUploadePath.mockConfig(always: true)).asOutput
         #expect(uploadResult)
         
-        let url = URL(string: "/path/to/file.txt")!
-        let (bigUploadable , _ ) = try await HeavyFileUploadePath.upload(fileUrl: url, config:HeavyFileUploadePath.mockConfig(always: true))
+//        let url = URL(string: "/path/to/file.txt")!
+        let bigUploadable = try await HeavyFileUploadePath.upload(fileUrl: .mock, config:HeavyFileUploadePath.mockConfig(always: true)).asOutput
         #expect(bigUploadable)
     }
     

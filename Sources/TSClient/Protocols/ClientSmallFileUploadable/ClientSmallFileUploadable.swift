@@ -32,9 +32,9 @@ public protocol  ClientSmallFileUploadable : FileUploadable ,ClientHttpRoute{
     
     static var timeoutInterval: TimeInterval { get }
     
-    static func upload<T:UpHttpClient>(metaData : InputData? , data : Data,filename : FileName, parameters : [String], queryItems : [URLQueryItem]  ,config : RequestConfig<T> ) async throws -> (OutputData,URLResponse)
+    static func upload<T:UpHttpClient>(metaData : InputData? , data : Data,filename : FileName, parameters : [String], queryItems : [URLQueryItem]  ,config : RequestConfig<T> ) async throws -> ServerResponse<Self>
     
-    static func upload<T:UpHttpClient>(metaData : InputData? , data : Data,filename : FileName, parameters : [String], queryItems : [String:String]   ,config : RequestConfig<T>) async throws -> (OutputData,URLResponse)
+    static func upload<T:UpHttpClient>(metaData : InputData? , data : Data,filename : FileName, parameters : [String], queryItems : [String:String]   ,config : RequestConfig<T>) async throws -> ServerResponse<Self>
 }
 
 public extension ClientHttpRoute where OutputData : Sendable {

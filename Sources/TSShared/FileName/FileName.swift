@@ -28,9 +28,7 @@ public struct FileName : Sendable , Hashable , Equatable, Codable{
     
     
     
-    public enum FileNameError: Error{
-        case empty, noExtension, specialCharacter
-    }
+    
     
     public let fullname : String
     

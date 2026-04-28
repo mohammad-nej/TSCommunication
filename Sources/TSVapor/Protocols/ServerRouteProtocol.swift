@@ -23,13 +23,4 @@ import TSShared
 /// }
 ///}
 ///```
-public protocol ServerRouteProtocol : HttpRoute,VaporRespondable, FileTransferMethodable  where InputData : Content , OutputData : Content
-,ClosureResponse == OutputData
-{
-    
-}
-
-
-
-
-
+public protocol ServerRouteProtocol : ServerGetRouteProtocol,HttpRoute  where InputData : Content , OutputData : Content{}

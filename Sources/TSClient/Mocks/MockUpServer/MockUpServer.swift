@@ -28,7 +28,7 @@ public struct MockUpServer<Out : Encodable> : Sendable , UpHttpClient{
     public func upload(for request : URLRequest, from data: Data, delegate: (any URLSessionTaskDelegate)? = nil) async throws -> (Data, URLResponse) {
 
         let (outputData,response) = try await uploadData(data, request)
-        let decoded = try encoder.encodeIfNeeded(outputData)
+        let decoded = try encoder.encode(outputData)
         return (decoded, response)
     }
     

@@ -7,9 +7,13 @@
 
 
 ///A route that can only receive json from server.
-public protocol GetHttpRoute: IdentifiableRoute{
+public protocol GetHttpRoute: IdentifiableRoute ,Failable where Failure == VaporError{
+    
     associatedtype OutputData : Codable
-           
+    
+    
+    
+    
     static var contentType : ContentType { get }
     static var path: ServerPath { get }
     static var method : HttpMethod { get }
@@ -20,4 +24,9 @@ public protocol GetHttpRoute: IdentifiableRoute{
 public extension GetHttpRoute {
     static  var method: HttpMethod { .get }
     static var contentType: ContentType { .json }
+}
+
+
+struct Another : ServerError{
+    let message: String
 }

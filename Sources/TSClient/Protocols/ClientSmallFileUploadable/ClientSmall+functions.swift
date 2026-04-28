@@ -27,7 +27,7 @@ public extension ClientSmallFileUploadable{
                                        
                                        queryItems : [URLQueryItem] = [],
                                        config : RequestConfig<T>
-    ) async throws -> (OutputData,URLResponse){
+    ) async throws -> ServerResponse<Self>{
         
         guard !data.isEmpty else { throw DataError.emptyData }
         
@@ -48,7 +48,7 @@ public extension ClientSmallFileUploadable{
         
         var body = Data()
         
-        let dtoData = try encoder.encodeIfNeeded(metaData)
+        let dtoData = try encoder.encode(metaData)
      
         
         //dto
@@ -75,8 +75,7 @@ public extension ClientSmallFileUploadable{
         //sending the file
         let (data, response) = try await config.httpClient.upload(for: request, from: body,delegate: config.delegate)
         
-        let decoded = try Self.decoder.decodeIfNeeded(OutputData.self, from: data)
-        return (decoded,response)
+        return .init(Self.self, data: data, response: response)
         
     }
     
@@ -87,7 +86,7 @@ public extension ClientSmallFileUploadable{
                                        parameters : [String] = [],
                                        queryItems : [String : String] = [:],
                                        config : RequestConfig<T>
-    ) async throws -> (OutputData,URLResponse) {
+    ) async throws -> ServerResponse<Self> {
         
         let items = queryItems.toQueryItem
         return try await upload(

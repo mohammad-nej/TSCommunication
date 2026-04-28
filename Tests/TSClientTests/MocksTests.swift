@@ -66,7 +66,7 @@ struct MocksTests {
         let serverMock = MockGetServer(for: SampleGetRoute.self, always: true)
         
         let config = serverMock.config
-        let (result,_) = try await SampleGetRoute.get(parameters: [], config: config)
+        let result = try await SampleGetRoute.get(parameters: [], config: config).asOutput
         #expect(result)
         
         let returnValue = false
@@ -74,7 +74,7 @@ struct MocksTests {
             return (returnValue,URLResponse())
         }
         let config2 = logicalMock.config
-        let (result2,_) = try await SampleGetRoute.get(parameters: [], queryItems: [], config: config2)
+        let result2 = try await SampleGetRoute.get(parameters: [], queryItems: [], config: config2).asOutput
         #expect(!result2)
         
     }
@@ -90,22 +90,22 @@ struct MocksTests {
         let config = serverMock.config
         
         
-        let (value,_) = try await FileUploadePath.upload(metaData: "this is meta data",
+        let value = try await FileUploadePath.upload(metaData: "this is meta data",
                                          data: "test data".data(using: .utf8)!,
-                                         filename: "file.txt", config: config)
+                                                     filename: "file.txt", config: config).asOutput
         
         #expect(!value)
         
-        let (value2,_) = try await FileUploadePath.upload(metaData: "hello",
+        let value2 = try await FileUploadePath.upload(metaData: "hello",
                                          data: "test data".data(using: .utf8)!,
-                                         filename: "file.txt", config: config)
+                                                      filename: "file.txt", config: config).asOutput
         
         #expect(value2)
   
-        let (value3,_) = try await HeavyFileUploadePath.upload(fileUrl: .mock,
+        let value3 = try await HeavyFileUploadePath.upload(fileUrl: .mock,
                                                                parameters: [],
                                                                queryItems: [],
-                                                               config: HeavyFileUploadePath.mockConfig(always: true))
+                                                           config: HeavyFileUploadePath.mockConfig(always: true)).asOutput
         #expect(value3)
         
         

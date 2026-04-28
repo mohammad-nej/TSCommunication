@@ -10,13 +10,53 @@ import Testing
 import TSShared
 @testable import TSClient
 
-@Suite("URL related tests")
+@Suite("General")
 struct URLCreationTests {
     
     
+    @Test("SeverResponse tests")
+    func serverResponse() throws {
+        
+        let data = try SampleGetRoute.encoder.encode(false)
+        let response = ServerResponse(SampleGetRoute.self, data: data, response: .init())
+        
+        let output = try response.asOutput
+        let resultOutput = try response.asResult
+        let rawResponse = response.asTuple
+        
+        #expect(rawResponse == (data,response.response))
+        #expect(resultOutput == .success(output))
+        #expect(!output)
+        
+        let errorSample = SampleGetRoute.Failure(error: true, reason: "This is sample")
+        let errorData = try SampleGetRoute.failureEncoder.encode(errorSample)
+        let errorResponse = ServerResponse(SampleGetRoute.self, data: errorData, response: .init())
+        
+        let serverError = try errorResponse.asServerError
+        let resultError = try errorResponse.asResult
+        
+        #expect(resultError == .failure(serverError))
+        #expect(serverError.error)
+        #expect(serverError.reason == "This is sample")
+        
+        let invalid = "This is an invalid response".data(using: .utf8)!
+        let invalidResponse = ServerResponse(SampleGetRoute.self, data: invalid, response: .init())
+        do{
+            _ = try invalidResponse.asResult
+        }catch{
+            let value = try #require(error as? ServerResponseError)
+            switch value {
+            case .unknownFormat(let data):
+                #expect(data == invalid)
+           
+            }
+        }
+        
+        
+        
+    }
     
-    
-    @Test("Create url")
+    @Test("Create url tests")
     func craeteURLTest() throws {
         let id = UUID().uuidString
         

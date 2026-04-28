@@ -28,28 +28,26 @@ import TSShared
 ///
 ///try registrar.register(to:app) //At this point, your routes and middlewares will be attached
 ///```
-public final class MiddlewareBuilder {
+ public struct MiddlewareBuilder {
     
     public init(){
        
     }
 
-    private var innerBuilder : InnerMiddleWareBuilder? = nil
+    var innerBuilder : [InnerMiddleWareBuilder] = []
     
 
-    ///Provides you with a `InnerMiddleWareBuilder` object that lets you append middleware(s) to your route.
-    public  func build(_ closure:  (inout InnerMiddleWareBuilder) -> Void){
-        var innerBuilder = InnerMiddleWareBuilder(middlewares: [])
-        
-        closure(&innerBuilder)
-        self.innerBuilder = innerBuilder
-    }
+//    ///Provides you with a `InnerMiddleWareBuilder` object that lets you append middleware(s) to your route.
+//    public  func build(_ closure:  (inout InnerMiddleWareBuilder) -> Void){
+//        var innerBuilder = InnerMiddleWareBuilder(middlewares: [])
+//        
+//        closure(&innerBuilder)
+//        self.innerBuilder = innerBuilder
+//    }
     
     func attach(to app : Application, previousIds : inout Set<RouteId>, duplicates : inout [RouteId] ){
-        if let innerBuilder{
-            innerBuilder.attach(to: app, inherited: [], previousIds: &previousIds, duplicates: &duplicates)
-        }else{
-            logger.warning("Middleware builder is empty, use `run` method first")
+        for builder in innerBuilder{
+            builder.attach(to: app, inherited: [], previousIds: &previousIds, duplicates: &duplicates)
         }
             
     }

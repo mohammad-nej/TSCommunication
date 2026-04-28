@@ -6,13 +6,36 @@
 //
 import Foundation
 
-public protocol Failable :  EncoderDecoder {
+public protocol Failable   {
+    
     associatedtype Failure : ServerError
+    associatedtype FailureCoder : EncoderDecoder = DefaultCoding
+    
+    ///encoder used for encoding server errors
+    static var failureEncoder : JSONEncoder { get }
+    
+    //decoder used for decoding server errors
+    static var failureDecoder : JSONDecoder { get }
+    
+    
 }
 
+public extension Failable {
+    
+    static var failureEncoder: JSONEncoder {
+        FailureCoder.encoder
+    
+    }
+    
+    static var failureDecoder: JSONDecoder {
+        FailureCoder.decoder
+    }
+}
 
 ///Type that indicates an error message received from server
-public protocol ServerError : Codable , Sendable, Equatable {}
+public typealias ServerError = Codable&Sendable&Equatable&Error
+
+
 
 
 
@@ -21,8 +44,12 @@ public struct VaporError : ServerError, Hashable {
     public let error : Bool
     public let reason: String
     
+    
+    
     public init(error: Bool, reason: String) {
         self.error = error
         self.reason = reason
     }
 }
+
+

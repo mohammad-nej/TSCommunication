@@ -11,6 +11,8 @@ import Vapor
 import Synchronization
 
 
+
+
 ///A type that indicates routes that can be registered to server
 ///
 ///All your routes will conform to this type xD
@@ -32,13 +34,26 @@ public typealias Registrable = GetHttpRoute & AddingCapableRoute
 ///This will register all your routes to vapor server. If you try to add a route more than once, the later ones will be ignored.
 ///
 /// - Warning: You should run ``register(on:Application)`` function **EXACTLY ONCE** when starting up your server. Attempting to run this function more than once will throw error.
-public  final class RouteRegistrar {
+public final class RouteRegistrar {
 
-    public enum RegisterationError : Error, LocalizedError {
-        case moreThanOnce
+    nonisolated(unsafe) private static var _byPassForTestingOnly : Bool = false
+    static private let byPassLock = NSLock()
+    
+    
+    
+    
+    static var byPassLockForTest : Bool {
+        set {
+            byPassLock.lock()
+            defer { byPassLock.unlock()}
+            
+            _byPassForTestingOnly = newValue
+        }
         
-        public var errorDescription: String? {
-            "Routes registration function should run exactly once per server launch."
+        get{
+            byPassLock.lock()
+            defer { byPassLock.unlock()}
+            return _byPassForTestingOnly
         }
     }
     
@@ -81,7 +96,7 @@ public  final class RouteRegistrar {
         }
     }
     
-    var duplicates : [RouteId] = []
+    public var duplicates : [RouteId] = []
     public var routes : [any Registrable.Type] = []
     public var builders : [MiddlewareBuilder] = []
     
@@ -109,7 +124,6 @@ public  final class RouteRegistrar {
     
     func addAllRoutes(to app: Application){
         for routeType in routes{
-            let route = routeType.init()
             let (inserted, _ ) = addedRoutes.insert(routeType.routeId)
             if inserted{
                 routeType.addRoute(to:app)
@@ -127,9 +141,13 @@ public  final class RouteRegistrar {
     public func register(on app: Application) throws -> [RouteId]{
         self.duplicates.removeAll()
         
+        guard !self.routes.isEmpty || !self.builders.isEmpty else {
+            return []
+        }
         
         if mode == .safe{
-            guard Self.counter < 1 else {
+          
+            guard Self.counter < 1 || Self.byPassLockForTest else {
                 throw RegisterationError.moreThanOnce
             }
             
@@ -147,3 +165,4 @@ public  final class RouteRegistrar {
     }
     
 }
+

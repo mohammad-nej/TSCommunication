@@ -12,7 +12,8 @@ import Foundation
 ///
 ///This type is basically the equivalent of `Vapor.PathComponent`.
 ///
-///We didn't want to use `PathComponent` directly
+///We didn't want to use `PathComponent` directly, cause that would need importing the entire `Vapor` package just for this matter.
+///This type will also do some light validations on your input.
 public struct PathPart : Communicatable, Hashable{
     public let value : String
     
@@ -75,20 +76,24 @@ extension PathPart : CustomStringConvertible{
         return self.value.hasPrefix(":")
     }
     
+    ///Checks if PathPart is a simple path
     public var isPath : Bool {
         return !self.isParameter && !self.isAnything && !self.isCatchAll
     }
     
+    ///Check if it's Anything wildcard
     public var isAnything : Bool {
         return self.value == "*"
     }
-    
+    ///Check if it's CatchAll wildcard
     public var isCatchAll : Bool {
         return self.value == "**"
     }
     
+    ///Vapor/Hummingbird anything wildcard
     public static let anything : PathPart = "*"
     
+    ///Vapor/Hummingbird catchall wildcard
     public static let catchAll : PathPart = "**"
 }
 

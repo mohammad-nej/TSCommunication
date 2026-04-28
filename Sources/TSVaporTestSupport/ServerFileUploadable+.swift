@@ -25,7 +25,7 @@ public extension ServerFileUploadable {
     ///which matches the definition of `_MetaData` type (provided in this package)
     ///to send your request to server.
     ///
-    ///On your route in server static function`getFileAndInputData(from:(inout) TestingHTTPRequest,using:JSONDecoder)` can be used
+    ///On your route in server, static function`getFileAndInputData(from:(inout) TestingHTTPRequest,using:JSONDecoder)` can be used
     ///on your route-type to get your file and metaData from your request
     ///```swift
     /////on your beforeRequest closure in route testing
@@ -42,7 +42,7 @@ public extension ServerFileUploadable {
         using request : inout TestingHTTPRequest) throws{
             
             let boundary = UUID().uuidString
-            let dtoData = try encoder.encodeIfNeeded(metaData)
+            let dtoData = try encoder.encode(metaData)
             request.headers.add(name: "Content-Type", value: "multipart/form-data; boundary=\(boundary)")
             
             var body = Data()

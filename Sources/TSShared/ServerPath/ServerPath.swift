@@ -9,9 +9,7 @@ import Foundation
 import OSLog
 
 
-public enum ServerPathError : Error{
-    case commaIsNotValid, partCanNotContainSlash, pathIsEmpty,invalidPath
-}
+
 
 ///Type that is used to create a path for your routes.
 ///

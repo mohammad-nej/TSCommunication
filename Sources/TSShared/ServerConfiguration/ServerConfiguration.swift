@@ -29,6 +29,7 @@ public struct ServerConfiguration : Equatable, Sendable, Hashable, Codable {
         return URL(string: string)
     }
     
+    ///address: 127.0.0.1:8080
     public static let local : ServerConfiguration = .init(method:.http,domain: "127.0.0.1", port: 8080)
 
     public static let test : ServerConfiguration = .init(method: .http, domain: "myTestDomain.com", port: 8080)
