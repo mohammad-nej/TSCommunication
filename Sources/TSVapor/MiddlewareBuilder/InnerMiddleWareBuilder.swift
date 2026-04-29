@@ -9,15 +9,16 @@ import Vapor
 import OSLog
 
 
-public typealias Groupable = GetHttpRoute  & VaporRespondable
+public typealias Groupable = ServerGetRouteProtocol  & VaporRespondable
 
 ///Can be used to group routes and add middleware to them.
 ///
 ///This type can't be initialized directly, use  ``RouteInserter``  instead.
- public struct InnerMiddleWareBuilder : BuildableBlock {
+ public struct InnerMiddleWareBuilder : Sendable ,BuildableBlock {
     
-    
-    
+     private  nonisolated(unsafe) var  _routes : [any Groupable.Type] = []
+     private  var lock : NSLock = .init()
+     
     init(middleware : (any Middleware) ){
         self.middleWares = [middleware]
     }
@@ -26,7 +27,20 @@ public typealias Groupable = GetHttpRoute  & VaporRespondable
         self.middleWares = middlewares
     }
     
-    public var routes : [any Groupable.Type] = []
+     public var routes : [any Groupable.Type] {
+         get{
+             lock.lock()
+             defer{
+                 lock.unlock()
+             }
+             return _routes
+         }
+         set{
+             lock.lock()
+             defer { lock.unlock()}
+             _routes = newValue
+         }
+     }
     public var middleWares : [any Middleware] = []
     var innerGroup : [InnerMiddleWareBuilder] = []
     
@@ -99,4 +113,8 @@ public typealias Groupable = GetHttpRoute  & VaporRespondable
         
     }
  
+}
+
+ extension InnerMiddleWareBuilder : InnerMiddewareContainer {
+    public var innerMiddleware: InnerMiddleWareBuilder { self }
 }

@@ -14,24 +14,12 @@ import Vapor
 
 
 
+
 @Suite("Testing different routes to a server")
-struct RoutesTests {
+struct RoutesTests{
     
-//    struct Builder {
-//        private let registration : RouteRegistrar
-//        
-//        @discardableResult
-//        init(app:Application, @RouteBuilderRB _ closure : () -> RouteRegistrar) throws{
-//            self.registration = closure()
-//            try registration.register(on: app)
-//        }
-//        
-//        func registre(on app: Application) throws{
-//            try registration.register(on: app)
-//        }
-//    }
     
-    let routes : [any AddingCapableRoute.Type] = [GetId.self, EchoRoute.self, DownloadFile.self , UploadFile.self]
+    var  routes : [any AnyBuildable] { [GetId(), EchoRoute(), DownloadFile() , UploadFile()] }
     
     let prepare : AppPreparationClosure = { _ in }
     
@@ -39,7 +27,7 @@ struct RoutesTests {
     
     @Test("result builder")
     func resultBuilder() async throws{
-        let tester = ServerTest(routes: [], builders: [])
+        let tester = ServerTest()
         try await tester.withApp{ app in
             
             
@@ -51,6 +39,8 @@ struct RoutesTests {
                     }
                     
                 }
+                
+               
                 DownloadFile()
             }
             
@@ -77,8 +67,23 @@ struct RoutesTests {
     
     @Test("A get request from out server")
     func getRequest() async throws {
+        let builders = routes.map { $0.innerMiddleware
+        }
+        let tester = ServerTest(){ app in
+           try RouteInserter(to: app) {
+                With(middlewares: []) {
+
+                    for route in builders {
+                        route
+                    }
+
+                }
+               for route in builders {
+                   route
+               }
+            }
         
-        let tester = ServerTest(routes: routes)
+        }
     
         try await tester.withApp{ app in
             let id = UUID()
@@ -96,7 +101,7 @@ struct RoutesTests {
     @Test("A post request to send data to server")
     func postRequest() async throws {
       
-        try await EchoRoute.test(prepare:prepare){ req in
+        try await EchoRoute.test(prepare:EchoRoute.insertToApp){ req  in
             try EchoRoute.insert("This is a test", in: &req)
         }afterResponse: { response in
             try #require(response.status == .ok)
@@ -115,7 +120,7 @@ struct RoutesTests {
         
         let fileText = "This is a test file"
         
-        try await DownloadFile.test(parameters: [fileText]){req in
+        try await DownloadFile.test(parameters: [fileText],prepare: DownloadFile.insertToApp){req in
             
         }afterResponse: { response in
             try #require(response.status == .ok)
@@ -155,7 +160,7 @@ struct RoutesTests {
     @Test("Test uploading a file to server")
     func uploadFile() async throws {
         
-        try await UploadFile.test(prepare:prepare){req in
+        try await UploadFile.test(prepare:UploadFile.insertToApp){req in
             let fileData = "This is test".data(using: .utf8)!
             try UploadFile.modifyRequest(metaData: "This is a test meta data", filename: "myfile.txt", data: fileData, using: &req)
             

@@ -15,4 +15,6 @@ import Vapor
 ///This protocol used internally, don't conform to it
 public protocol BuildableBlock {
     var routes : [any Groupable.Type] { get }
+    
+//    init()
 }

@@ -55,32 +55,33 @@ public final class ServerTest {
     ///Routes are going to be added to `Application`
     ///
     ///These routes will be added **after** `preparation` closure
-    public var routes : [any AddingCapableRoute.Type]
+//    public var routes : [any AddingCapableRoute.Type]
     
     ///Middleware builders that are going to be added to `Application`
     ///
     ///These routes will be added **after** `preparation` closure
-    public var builders : [MiddlewareBuilder]
+//    public var builders : [MiddlewareBuilder]
     
   
     public var registrationOrder : RouteRegistrar.AddingOrder = .middlewareBuildersFirst
     
-    public init(routes : [any AddingCapableRoute.Type], builders : [MiddlewareBuilder] ){
-        self.routes = routes
-        self.builders = builders
-    }
+//    public init(routes : [any AddingCapableRoute.Type], builders : [MiddlewareBuilder] ){
+//        self.routes = routes
+//        self.builders = builders
+//    }
     
     
-    public init(routes : [any AddingCapableRoute.Type],
-                builders : [MiddlewareBuilder] = [],
+    public init(
+//        routes : [any AddingCapableRoute.Type],
+//                builders : [MiddlewareBuilder] = [],
                 preparation: @escaping AppPreparationClosure = { _ in },
                 cleanups: @escaping AppPreparationClosure = { _ in },
                 errorCleanup: @Sendable @escaping (Error) async throws -> () = { _ in } ) {
         self.preparation = preparation
         self.cleanups = cleanups
         self.errorCleanup = errorCleanup
-        self.routes = routes
-        self.builders = builders
+//        self.routes = routes
+//        self.builders = builders
     }
  
     ///Provides an Application instance for you to run your tests with
@@ -88,7 +89,7 @@ public final class ServerTest {
     ///The `Application` created by this function will shutdown after it's execution, this means that in a single
     ///test function if you  call this function multiple times, those `Application` objects are different.
     ///
-    ///This function also will set ``RouteRegistrar`` to **unsafe** mode, this will let are your tests to run in parallel by swift testing,
+    ///This function also will set ``RouteRegistrar`` to **unsafe** mode, this will let  your tests to run in parallel by swift testing,
     ///```swift
     ///@Test("My route test function")
     ///func testMyRoute() async throws{
@@ -106,7 +107,7 @@ public final class ServerTest {
         let app = try await Application.make(.testing)
         do {
             try await preparation(app)
-            try addRoutes(to: app)
+//            try addRoutes(to: app)
             try await test(app)
             try await cleanups(app)
         }
@@ -118,13 +119,13 @@ public final class ServerTest {
         try await app.asyncShutdown()
     }
     
-    func addRoutes(to app: Application) throws {
-       let registrar = RouteRegistrar(order: registrationOrder)
-        registrar.mode = .unsafe
-        registrar.builders = builders
-        registrar.routes = self.routes
-        
-        try registrar.register(on: app)
-    }
+//    func addRoutes(to app: Application) throws {
+//       let registrar = RouteRegistrar(order: registrationOrder)
+//        registrar.mode = .unsafe
+//        registrar.builders = builders
+//        registrar.routes = self.routes
+//        
+//        try registrar.register(on: app)
+//    }
     
 }

@@ -26,7 +26,7 @@ public extension GetHttpRoute {
 
 
 //since all routes conform to GetHttpRoute , this extension will be available to all routes
-public extension GetHttpRoute where Self : FileTransferMethodable , Self : VaporRespondable {
+public extension GetHttpRoute where Self : FileTransferMethodable , Self : VaporRespondable, Self : InnerMiddewareContainer {
     
     ///Convenient function for testing your app
     ///
@@ -49,8 +49,8 @@ public extension GetHttpRoute where Self : FileTransferMethodable , Self : Vapor
         afterResponse: (TestingHTTPResponse) async throws -> () = { _ in }) async throws
     
     {
-        let serverTester = ServerTest(routes: [Self.self], builders: [])
-        serverTester.preparation = prepare
+        let serverTester = ServerTest(preparation: prepare)
+        
         try await serverTester.withApp { app in
             
             try await app.testing().test(
@@ -66,7 +66,16 @@ public extension GetHttpRoute where Self : FileTransferMethodable , Self : Vapor
         }
 
     }
-
-    
-    
+        
+    ///This will insert current route to you server
+    ///
+    ///This can be useful for routes that requires no setups to perform
+    static var insertToApp : AppPreparationClosure {
+        return { app in
+            
+            try RouteInserter(to: app) {
+                Self.init()
+            }
+        }
+    }
 }

@@ -36,26 +36,26 @@ public typealias Registrable = GetHttpRoute & AddingCapableRoute
 /// - Warning: You should run ``register(on:Application)`` function **EXACTLY ONCE** when starting up your server. Attempting to run this function more than once will throw error.
 public final class RouteRegistrar {
 
-    nonisolated(unsafe) private static var _byPassForTestingOnly : Bool = false
-    static private let byPassLock = NSLock()
+//    nonisolated(unsafe) private static var _byPassForTestingOnly : Bool = false
+//    static private let byPassLock = NSLock()
+//    
+//    
+//    
     
-    
-    
-    
-    static var byPassLockForTest : Bool {
-        set {
-            byPassLock.lock()
-            defer { byPassLock.unlock()}
-            
-            _byPassForTestingOnly = newValue
-        }
-        
-        get{
-            byPassLock.lock()
-            defer { byPassLock.unlock()}
-            return _byPassForTestingOnly
-        }
-    }
+//    static var byPassLockForTest : Bool {
+//        set {
+//            byPassLock.lock()
+//            defer { byPassLock.unlock()}
+//            
+//            _byPassForTestingOnly = newValue
+//        }
+//        
+//        get{
+//            byPassLock.lock()
+//            defer { byPassLock.unlock()}
+//            return _byPassForTestingOnly
+//        }
+//    }
     
     ///Indicates the order of adding routes to server
     public enum AddingOrder {
@@ -66,41 +66,41 @@ public final class RouteRegistrar {
         case middlewareBuildersFirst
     }
     
-    nonisolated(unsafe) private static var _counter : Int = 0
-    static private let lock = NSLock()
-    
+//    nonisolated(unsafe) private static var _counter : Int = 0
+//    static private let lock = NSLock()
+//    
     private var addedRoutes : Set<RouteId> = []
     
-    public enum SafetyMode {
-        ///Safe mode will prevent `registre` function to be called more than once on runtime
-        ///
-        ///Even thought this is a very good feature, this will cause problems when testing your server, cause Swift Testing runs all tests in parallel
-        case safe
-        
-        /// In this mode `registre(to:Application` function can run multiple times.
-        ///
-        /// This mode is should only be used when testing your server. ``ServerTest`` will set this value to `.unsafe`.
-        case unsafe
-    }
+//    public enum SafetyMode {
+//        ///Safe mode will prevent `registre` function to be called more than once on runtime
+//        ///
+//        ///Even thought this is a very good feature, this will cause problems when testing your server, cause Swift Testing runs all tests in parallel
+//        case safe
+//        
+//        /// In this mode `registre(to:Application` function can run multiple times.
+//        ///
+//        /// This mode is should only be used when testing your server. ``ServerTest`` will set this value to `.unsafe`.
+//        case unsafe
+//    }
     
-    static var counter : Int {
-        get{
-            lock.lock()
-            defer { lock.unlock() }
-            return self._counter
-        }
-        set{
-            lock.lock()
-            defer { lock.unlock() }
-            self._counter = newValue
-        }
-    }
+//    static var counter : Int {
+//        get{
+//            lock.lock()
+//            defer { lock.unlock() }
+//            return self._counter
+//        }
+//        set{
+//            lock.lock()
+//            defer { lock.unlock() }
+//            self._counter = newValue
+//        }
+//    }
     
     public var duplicates : [RouteId] = []
     public var routes : [any Registrable.Type] = []
     public var builders : [MiddlewareBuilder] = []
     
-    public var mode: SafetyMode = .safe
+//    public var mode: SafetyMode = .safe
     
     public let order : AddingOrder
     
@@ -144,16 +144,7 @@ public final class RouteRegistrar {
         guard !self.routes.isEmpty || !self.builders.isEmpty else {
             return []
         }
-        
-        if mode == .safe{
-          
-            guard Self.counter < 1 || Self.byPassLockForTest else {
-                throw RegisterationError.moreThanOnce
-            }
-            
-            Self.counter += 1
-        }
-        
+ 
         if order == .middlewareBuildersFirst{
             addMiddleWares(to: app)
             addAllRoutes(to: app)

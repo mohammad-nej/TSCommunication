@@ -21,10 +21,23 @@ public struct InnerMiddlewareRB{
     
  
     
-    public static func buildBlock(_ components : [any BuildableBlock]) -> [any BuildableBlock] {
-        return components
+    public static func buildBlock(_ components : [any BuildableBlock]...) -> [any BuildableBlock] {
+        return components.flatMap{$0}
     }
 
+    public static func buildArray(_ components: [[any BuildableBlock]]) -> [any BuildableBlock] {
+        components.flatMap { 
+            $0
+        }
+    }
+    
+    public static func buildExpression(_ expression: any BuildableBlock) -> [any BuildableBlock] {
+        [expression]
+    }
+    
+    public static func buildExpression(_ expression: Group) -> [any BuildableBlock] {
+        expression.routes.map{ $0.init() as any BuildableBlock}
+    }
     
     public static func buildFinalResult(_ components: [any BuildableBlock]) -> InnerMiddleWareBuilder {
         

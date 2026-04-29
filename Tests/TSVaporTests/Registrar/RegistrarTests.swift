@@ -20,10 +20,7 @@ struct RegistrarTests {
     
     @Test("Test RouteRegistrar")
     func registrar() async throws {
-        
-        try await withByPassLock {
-            
-            
+    
             try await withApp { app in
                 let routes : [any Registrable.Type] = [ TestRoute.self , SecondTest.self, ThirdTest.self ]
                 let registrar = RouteRegistrar()
@@ -33,8 +30,7 @@ struct RegistrarTests {
                 
                 #expect(duplicates.isEmpty)
             }
-            
-            RouteRegistrar.counter = 0
+          
             try await withApp { app in
                 let routes : [any Registrable.Type] = [ SecondTest.self , SecondTest.self, ThirdTest.self ]
                 let registrar = RouteRegistrar()
@@ -45,8 +41,7 @@ struct RegistrarTests {
                 #expect(duplicates.count == 1)
                 #expect(duplicates[0] == SecondTest.routeId)
             }
-            
-            RouteRegistrar.counter = 0
+        
             try await withApp { app in
                 let routes : [any Registrable.Type] = [ ThirdTestSimillar.self,ThirdTestSimillar.self , SecondTest.self, ThirdTest.self ]
                 let registrar = RouteRegistrar()
@@ -58,20 +53,7 @@ struct RegistrarTests {
                 #expect(duplicates[0] == ThirdTestSimillar.routeId)
                 #expect(duplicates[1] == ThirdTestSimillar.routeId)
             }
-            
-//            ///This time we didn't reset the counter, so it should throw
-//            
-//            try await withApp { app in
-//                let routes : [any Registrable.Type] = [ TestRoute.self , SecondTest.self, ThirdTest.self ]
-//                let registrar = RouteRegistrar()
-//                
-//                registrar.routes = routes
-//                #expect(throws: RegisterationError.moreThanOnce){
-//                    try registrar.register(on: app)
-//                }
-//                
-//            }
-        }
+ 
     }
     
     

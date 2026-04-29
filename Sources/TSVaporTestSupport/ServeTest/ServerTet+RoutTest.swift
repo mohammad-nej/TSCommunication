@@ -29,13 +29,13 @@ public extension ServerTest {
                               headers : HTTPHeaders = [:],
                               body : ByteBuffer? = nil,
                               mode : URLCreationMode = .safe,
-                              preparation :  @escaping AppPreparationClosure ,
+//                              preparation :  @escaping AppPreparationClosure ,
                               beforeRequest: (inout TestingHTTPRequest) async throws -> () = { _ in },
                               afterResponse: (TestingHTTPResponse) async throws -> () = { _ in }) async throws
     
     {
         
-        self.preparation = preparation
+
         return try await self.withApp { app in
             
             try await app.testing().test(
