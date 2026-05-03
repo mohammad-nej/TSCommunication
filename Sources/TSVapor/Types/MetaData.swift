@@ -7,7 +7,7 @@
 
 import Vapor
 
-///Type that is used for receiving content of a multipart request
+///used for receiving content of a multipart request
 public struct _MetaData : Content {
     public let metaData : String
     public let file : File

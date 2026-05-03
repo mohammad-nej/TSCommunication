@@ -20,10 +20,8 @@ import TSShared
 ///try await AddContactRoute
 ///     .send(contactDTO, config : .myConfig)
 ///```
-public protocol ClientHttpRoute : HttpRoute, EncoderDecoder {
+public protocol ClientHttpRoute : HttpRoute {
     
-    
-    associatedtype Coding : EncoderDecoder = DefaultCoding
     
     static func send<T:UpHttpClient>(_ data : InputData , parameters : [String], queryItems : [String : String] ,config : RequestConfig<T>) async throws -> ServerResponse<Self>
     
@@ -38,12 +36,7 @@ public extension ClientHttpRoute {
     
     static var contentType : ContentType { .json }
     
-    static var encoder: JSONEncoder {
-        Coding.encoder
-    }
-    static var decoder: JSONDecoder {
-        Coding.decoder
-    }
+  
     
    
 }

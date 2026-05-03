@@ -18,7 +18,7 @@ import TSShared
 ///try await MySampleRoute.send("test",config : config)
 ///```
 ///
-///You can also mock your HttpClient in order test your app:
+///You can also mock your HttpClient in order to test your app:
 ///```swift
 ///struct MockHttpClient : HttpClient {
 /// func upload(for: URLRequest, from: Data, delegate: (any URLSessionTaskDelegate)?) async throws -> (Data, URLResponse) {
@@ -60,13 +60,12 @@ public struct RequestConfig<C : _HttpClientable> : Sendable  where C : Sendable 
 extension RequestConfig where C == URLSession {
     
     ///Uses localhost as server , URLSession.shared as httpClient , and safe mode for url checking
-    static var local: RequestConfig<URLSession> {
+    public static var local: RequestConfig<URLSession> {
         RequestConfig(server: .local, client: .shared, urlSafetyCheckMode: .safe)
     }
     ///Uses  URLSession.shared as httpClient , and safe mode for url checking
-    static func server(_ server : ServerConfiguration) -> RequestConfig<URLSession>{
+    public static func server(_ server : ServerConfiguration) -> RequestConfig<URLSession>{
         return RequestConfig(server: server, client: .shared, urlSafetyCheckMode: .safe)
     }
 }
-
 

@@ -13,7 +13,7 @@ import OSLog
 
 ///Type that is used to create a path for your routes.
 ///
-///ServerPath can be created in may different way depending on your needs
+///ServerPath can be created in may different ways depending on your needs
 ///```swift
 ///let path = try ServerPath(string:"users/:id")
 ///let path2 = ServerPath(parts : ["users",":id"])
@@ -41,8 +41,9 @@ public struct ServerPath : Communicatable, Hashable{
         self.parts.map{$0.value}.joined(separator: "/")
     }
     
-    
+    ///PathParts inside this server path
     public var parts : [PathPart]
+    
     
     public init(parts: [PathPart]) {
         self.parts = parts
@@ -52,7 +53,7 @@ public struct ServerPath : Communicatable, Hashable{
 
 extension ServerPath : CustomStringConvertible{
     public var description: String {
-        return "/" + parts.map{$0.description}.joined(separator: "/")
+        return pathWithFirstSlash
     }
     
     public  var pathWithoutFirstSlash: String {

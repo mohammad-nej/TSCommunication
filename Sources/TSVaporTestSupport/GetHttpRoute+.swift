@@ -21,12 +21,8 @@ public extension GetHttpRoute {
     }
 }
 
-
-
-
-
-//since all routes conform to GetHttpRoute , this extension will be available to all routes
-public extension GetHttpRoute where Self : FileTransferMethodable , Self : VaporRespondable, Self : InnerMiddewareContainer {
+//since all routes conform to AnyHttpRoute , this extension will be available to all routes
+public extension AnyHttpRoute  {
     
     ///Convenient function for testing your app
     ///
@@ -40,6 +36,7 @@ public extension GetHttpRoute where Self : FileTransferMethodable , Self : Vapor
     ///}
     ///```
     static func test(
+        method: Application.Method = .inMemory,
         parameters : [String] = [],
         headers : HTTPHeaders = [:],
         body : ByteBuffer? = nil,
@@ -53,7 +50,7 @@ public extension GetHttpRoute where Self : FileTransferMethodable , Self : Vapor
         
         try await serverTester.withApp { app in
             
-            try await app.testing().test(
+            try await app.testing(method: method).test(
                 Self.self,
                 parameters: parameters,
                 headers: headers,
@@ -67,14 +64,16 @@ public extension GetHttpRoute where Self : FileTransferMethodable , Self : Vapor
 
     }
         
-    ///This will insert current route to you server
+    ///This will only insert current route to you server
     ///
-    ///This can be useful for routes that requires no setups to perform
+    ///This can be useful for routes that require no setups to perform
     static var insertToApp : AppPreparationClosure {
         return { app in
-            
-            try RouteInserter(to: app) {
-                Self.init()
+            let group = Group{
+                Self.self
+            }
+            RouteInserter(to: app) {
+                group
             }
         }
     }

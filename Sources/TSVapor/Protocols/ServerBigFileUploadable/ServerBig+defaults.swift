@@ -8,8 +8,8 @@
 
 import TSShared
 
-public extension ServerBigFileUploadable {
+public extension ServerLargeFileUploadable {
     static  var transferMethod: FileTransferMethod { .stream }
     
-    static public var method: HttpMethod { .post }
+    static var method: HttpMethod { .POST }
 }

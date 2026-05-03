@@ -19,9 +19,11 @@ public extension ServerTest {
     ///
     ///You can test your routes with ease :
     ///```swift
-    ///let tester = ServerTest(routes:[myRoute])
-    ///tester.test(MyRoute.self){
-    ///}afterResponse:{
+    ///
+    ///try await tester.test(MyRoute.self){req in
+    ///
+    ///}afterResponse:{ response in
+    ///
     ///}
     ///```
     func test<T:GetHttpRoute>(_ route : T.Type,
@@ -29,13 +31,8 @@ public extension ServerTest {
                               headers : HTTPHeaders = [:],
                               body : ByteBuffer? = nil,
                               mode : URLCreationMode = .safe,
-//                              preparation :  @escaping AppPreparationClosure ,
                               beforeRequest: (inout TestingHTTPRequest) async throws -> () = { _ in },
-                              afterResponse: (TestingHTTPResponse) async throws -> () = { _ in }) async throws
-    
-    {
-        
-
+                              afterResponse: (TestingHTTPResponse) async throws -> () = { _ in }) async throws{
         return try await self.withApp { app in
             
             try await app.testing().test(
@@ -43,10 +40,7 @@ public extension ServerTest {
                 headers: headers,
                 body: body,
                 beforeRequest: beforeRequest,
-                afterResponse: afterResponse
-            )
+                afterResponse: afterResponse)
         }
     }
-
-    
 }

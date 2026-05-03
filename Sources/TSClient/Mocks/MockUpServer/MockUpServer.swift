@@ -47,6 +47,8 @@ public struct MockUpServer<Out : Encodable> : Sendable , UpHttpClient{
         self.uploadData = response
         self.encoder = JSONEncoder()
     }
+    
+    
 }
 
 

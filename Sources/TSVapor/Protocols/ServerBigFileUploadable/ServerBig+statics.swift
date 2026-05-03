@@ -8,7 +8,7 @@ import TSShared
 import Foundation
 import NIOCore
 import Vapor
-public extension ServerBigFileUploadable {
+public extension ServerLargeFileUploadable {
     
     
     ///Write the file that is sent within this request directly to disk

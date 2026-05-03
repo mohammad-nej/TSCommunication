@@ -18,4 +18,10 @@ public extension ClientHttpRoute where OutputData : Sendable {
         let server = MockUpServer(for: Self.self, always: value)
         return RequestConfig(server: .local, client: server)
     }
+    
+    ///Mock config that will always throw with your provided error
+    static func mockConfig(throws value : Self.Failure) -> RequestConfig<MockUpServer<Self.Failure>> {
+        let server = MockUpServer(for: Self.self, throws: value)
+        return RequestConfig(server: .local, client: server)
+    }
 }

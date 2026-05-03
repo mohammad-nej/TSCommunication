@@ -31,7 +31,7 @@ struct GeneralTests {
         
         static let path: TSShared.ServerPath = "uploadFile"
         
-        static let method: TSShared.HttpMethod = .delete
+        static let method: TSShared.HttpMethod = .DELETE
         
         static var contentType: ContentType { .jpeg}
     }
@@ -75,7 +75,30 @@ struct GeneralTests {
         
         let typeHeader = try #require(request.headers["Content-Type"].first)
         #expect(typeHeader == "multipart/form-data; boundary=\(boundryText)" )
+        
     }
     
     
+}
+
+
+struct EchoRoute : GetHttpRoute {
+    typealias OutputData = Bool
+    
+    static var path: TSShared.ServerPath  { "echo"}
+}
+
+struct DwonloadRoute : FileDownloadable {
+    typealias OutputData = Data
+    
+    static var path: TSShared.ServerPath { "download" }
+
+}
+
+extension EchoRoute : ServerGetRouteProtocol {
+    static var closure: @Sendable (Vapor.Request) async throws -> Bool {
+        return { req in
+            true
+        }
+    }
 }

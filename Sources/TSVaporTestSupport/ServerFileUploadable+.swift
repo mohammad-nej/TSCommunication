@@ -13,24 +13,12 @@ import Vapor
 
 public extension ServerFileUploadable {
     
-    ///Creates a multipart request and injects your  data and metaData in the request
+    ///Creates a multipart test request and injects your  data and metaData in the request
     ///
-    ///This functions uses the following format
-    ///```swift
-    ///{
-    /// metaData : String,
-    /// file : Vapor.File
-    ///}
-    ///```
-    ///which matches the definition of `_MetaData` type (provided in this package)
-    ///to send your request to server.
-    ///
-    ///On your route in server, static function`getFileAndInputData(from:(inout) TestingHTTPRequest,using:JSONDecoder)` can be used
-    ///on your route-type to get your file and metaData from your request
     ///```swift
     /////on your beforeRequest closure in route testing
     ///try await app.testing().test(MyUploadableRoute){ request in
-    /// let (file,metaData) = try MyUploadableRoute.getFileAndInput(from: request)
+    ///  try MyUploadableRoute.modifyRequest(metaData:"Extra info",filename:"myfile.txt", data:fileData,using: &request)
     /// //....
     ///}
     ///```

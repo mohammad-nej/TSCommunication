@@ -1,54 +1,85 @@
 //
-//  CollectionBuilder.swift
-//  Whisper
+//  InnerMiddleWareBuilder.swift
+//  TSCommunication
 //
-//  Created by MohammavDev on 4/20/26.
+//  Created by MohammavDev on 4/23/26.
 //
-
-import Vapor
 import TSShared
+import Vapor
+import OSLog
 
 
-
-///Responsible for adding Middleware(s) to your routes
+///Can be used to group routes and add middleware to them.
 ///
-///You can easily add Middleware(s) to your route using this builder:
-///```swift
-///let builder = MiddleWareBuilder(app: application)
-///    .build{ group in
-///        group.add(middleware:TestMiddleWare2())
-///        group.group(TestMiddleWare()) { innerGroup in
-///             innerGroup.add(route:route)
-///    }
-///}
-///```
-///Once you have created your builders you can add them to your RouteRegistrar
-///```swift
-///let registrar = RouteRegistrar(routes:[],builders:[builder])
-///
-///try registrar.register(to:app) //At this point, your routes and middlewares will be attached
-///```
- public struct MiddlewareBuilder {
+///This type can't be initialized directly, use ``With``  to add middleware(s) to your route(s)
+public struct MiddlewareBuilder : Sendable  {
     
-    public init(){
-       
+     private  nonisolated(unsafe) var  _routes : [any IdentifiableRoute.Type] = []
+     private  var lock : NSLock = .init()
+     
+    init(middleware : (any Middleware) ){
+        self.middleWares = [middleware]
     }
-
-    var innerBuilder : [InnerMiddleWareBuilder] = []
     
-
-//    ///Provides you with a `InnerMiddleWareBuilder` object that lets you append middleware(s) to your route.
-//    public  func build(_ closure:  (inout InnerMiddleWareBuilder) -> Void){
-//        var innerBuilder = InnerMiddleWareBuilder(middlewares: [])
-//        
-//        closure(&innerBuilder)
-//        self.innerBuilder = innerBuilder
-//    }
+    init(middlewares : [any Middleware] = []){
+        self.middleWares = middlewares
+    }
     
-    func attach(to app : Application, previousIds : inout Set<RouteId>, duplicates : inout [RouteId] ){
-        for builder in innerBuilder{
-            builder.attach(to: app, inherited: [], previousIds: &previousIds, duplicates: &duplicates)
+     var routes : [any IdentifiableRoute.Type] {
+         get{
+             lock.lock()
+             defer{ lock.unlock() }
+             return _routes
+         }
+         set{
+             lock.lock()
+             defer { lock.unlock() }
+             _routes = newValue
+            }
+     }
+     
+     
+    var middleWares : [any Middleware] = []
+    var innerGroup : [MiddlewareBuilder] = []
+    
+    func attach(to app: Application,inherited: [any Middleware],previousIds : inout Set<RouteId>, duplicates : inout [RouteId]){
+        let combined = inherited + middleWares
+        app.group(combined){ vaporGroup in
+            for routeType in routes{
+                ///Http routes
+                if let routeType = routeType as? any AnyHttpRoute.Type{
+                    let id = routeType.routeId
+                    let (inserted , _ ) = previousIds.insert(id)
+                    
+                    if !inserted{
+                        logger.warning("Route with id: \(id.description) was added more than once. Only the first addition will be used.")
+                        duplicates.append(routeType.routeId)
+                        continue
+                    }
+                    
+                    vaporGroup.add(routeType)
+                }
+                //Web sockets
+                else if let routeType = routeType as? any ServerWebSocket.Type{
+                    let id = routeType.routeId
+                    let (inserted , _ ) = previousIds.insert(id)
+                    
+                    if !inserted{
+                        logger.warning("Route with id: \(id.description) was added more than once. Only the first addition will be used.")
+                        duplicates.append(routeType.routeId)
+                        continue
+                    }
+                    vaporGroup.add(routeType)
+                }else{
+                    fatalError("Unsupported route type: \(routeType)")
+                }
+            }
         }
-            
+        for group in innerGroup{
+            group.attach(to: app,inherited: combined, previousIds: &previousIds, duplicates: &duplicates)
+        }
+        
+        
     }
+ 
 }

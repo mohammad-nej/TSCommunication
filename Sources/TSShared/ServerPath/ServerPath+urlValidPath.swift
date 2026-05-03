@@ -23,6 +23,7 @@ public enum URLCreationMode : Equatable , Hashable , Sendable{
     ///This will make sure that you don't accidentally miss a parameter or don't crash because of passing insufficient amount of parameters
     case safe
     
+    
     ///Completely disabling bound checking
     ///
     /// - Warning: While disabling bound checking could slightly speed up the process, function might crash if you pass in insufficient amount of  parameters

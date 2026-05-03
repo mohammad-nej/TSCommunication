@@ -24,15 +24,19 @@ public enum ServerResponseError : Error , LocalizedError {
 ///```swift
 /////Getting output, if you don't care about server error
 ///try await GetDataRoute.get(parameters : [], config:config)
-///                             .asOutput()
+///                             .asOutput
 /////If you only want the error
 ///try await GetDataRoute.get(parameters : [], config:config)
-///                             .asServerError()
+///                             .asServerError
 /////if you want either of them.
 ///try await GetDataRoute.get(parameters : [], config:config)
-///                             .asResult() //-> Result<OutputData,Failure>
+///                             .asResult //-> Result<OutputData,Failure>
+///
+/////if you want the plain tuple stye
+///try await GetDataRoute.get(parameters : [], config:config)
+///                             .asTuple //-> (Data,URLResponse)
 ///```
-public struct ServerResponse< T : GetHttpRoute> : Sendable , Equatable , Hashable where T : EncoderDecoder{
+public struct ServerResponse< T : OutputableRoute> : Sendable , Equatable , Hashable where T : EncoderDecoder{
     
     
     public let data :  Data
@@ -46,7 +50,12 @@ public struct ServerResponse< T : GetHttpRoute> : Sendable , Equatable , Hashabl
     ///Converts ServerResponse to the OutputData of this route if possible.
     public var asOutput : T.OutputData  {
         get throws{
-            try T.decoder.decode(T.OutputData.self, from: self.data)
+            //if we are downloading a file from  server, we shouldn't decode it
+            //using json decoder
+            if T.self is  (any ClientFileDownloadable.Type){
+                return data as! T.OutputData
+            }
+            return try T.decoder.decode(T.OutputData.self, from: self.data)
         }
     }
     

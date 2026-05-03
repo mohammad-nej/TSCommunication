@@ -12,17 +12,17 @@ import Foundation
 
 public extension MockUpServer{
     ///Creates a mock  that runs a closure upon being called
-    init<T:ClientHttpRoute>(for route : T.Type,
+    init<T:OutputableRoute>(for route : T.Type,
                             uploadData : @Sendable @escaping (Data,URLRequest) async throws -> (Out,URLResponse),
                             
-    ) where T.OutputData == Out {
+    ) where T.OutputData == Out , T:EncoderDecoder {
         self.uploadData = uploadData
         self.encoder = T.encoder
     }
     
     ///Always returns the provided value
-    init<T:ClientHttpRoute>(for route : T.Type,
-                            always value : Out) where Out : Sendable{
+    init<T:OutputableRoute>(for route : T.Type,
+                            always value : Out) where Out : Sendable,T:EncoderDecoder {
         self.uploadData = { _, _ in
             return (value,URLResponse())
         }
@@ -30,4 +30,14 @@ public extension MockUpServer{
         self.encoder = T.encoder
         
     }
+    
+    init<T:OutputableRoute>(for route : T.Type,throws value : T.Failure) where Out : Sendable,T.Failure == Out{
+        self.uploadData = { _, _ in
+            return (value,URLResponse())
+        }
+        self.encoder = T.failureEncoder
+    }
+    
 }
+
+

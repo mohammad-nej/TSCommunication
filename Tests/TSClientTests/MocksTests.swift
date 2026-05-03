@@ -21,45 +21,7 @@ extension URLRequest{
 
 @Suite("Testing mocks ")
 struct MocksTests {
-    
-    
-//    @Test("A constant responder")
-//    func constantResponder() async throws {
-//        let responder = MockResponder(always: "Hello I am running")
-//        
-//        let (response1, _) = try await responder.upload(for: .mock, from: Data(), delegate: nil)
-//        let (response2, _) = try await responder.data(for: .mock, delegate: nil)
-//        let (response3, _) = try await responder.upload(for: .mock, fromFile: .mock, delegate: nil)
-//        
-//        let decoded1 = try JSONDecoder().decode(String.self, from: response1)
-//        let decoded2 = try JSONDecoder().decode(String.self, from: response2)
-//        let decoded3 = try JSONDecoder().decode(String.self, from: response3)
-//        
-//        #expect(decoded1 == "Hello I am running")
-//        #expect(decoded2 == "Hello I am running")
-//        #expect(decoded3 == "Hello I am running")
-//        
-//        
-//        let responder2 = MockResponder {
-//            let value = "Hello I am running" + " 2"
-//            
-//            return (value,URLResponse())
-//        }
-//        
-//        let (response21, _) = try await responder2.upload(for: .mock, from: Data(), delegate: nil)
-//        let (response22, _) = try await responder2.data(for: .mock, delegate: nil)
-//        let (response23, _) = try await responder2.upload(for: .mock, fromFile: .mock, delegate: nil)
-//        
-//        let decoded21 = try JSONDecoder().decode(String.self, from: response21)
-//        let decoded22 = try JSONDecoder().decode(String.self, from: response22)
-//        let decoded23 = try JSONDecoder().decode(String.self, from: response23)
-//        
-//        #expect(decoded21 == "Hello I am running 2")
-//        #expect(decoded22 == "Hello I am running 2")
-//        #expect(decoded23 == "Hello I am running 2")
-//        
-//    }
-    
+
     @Test("Get server mock")
     func getClientResponder() async throws {
         

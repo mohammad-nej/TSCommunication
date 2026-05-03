@@ -8,4 +8,5 @@
 import Vapor
 import TSShared
 
+///Makes NoData content
 extension NoData : Content {}

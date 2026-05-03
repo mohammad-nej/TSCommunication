@@ -49,7 +49,7 @@ public struct MockHttpServer: Sendable , HttpClient {
         return try await uploadData(data,url)
     }
     
-    ///Mocks downloading data from server, mainly used by .get requests
+    ///Mocks downloading data from server, mainly used by .GET requests
     public func data(for url: URLRequest, delegate: (any URLSessionTaskDelegate)?) async throws -> (Data, URLResponse) {
         
         return try await downloadData(url)

@@ -7,7 +7,7 @@
 import Foundation
 import TSShared
 
-public extension ClientBigFileUploadable{
+public extension ClientLargeFileUploadable{
     
     
     ///Streams a large file to server in chunks

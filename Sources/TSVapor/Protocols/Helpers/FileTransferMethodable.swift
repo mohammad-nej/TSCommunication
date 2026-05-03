@@ -10,6 +10,8 @@ import Vapor
 
 
 ///Method that is used by vapor to collect body of request
+///
+///All HTTP routes already conform to this protocol, you don't need to conform directly
 public protocol FileTransferMethodable {
     static var transferMethod: FileTransferMethod { get }
 }

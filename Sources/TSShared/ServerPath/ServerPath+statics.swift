@@ -13,6 +13,7 @@ public extension ServerPath {
     ///vapor catchall parameter
     static let catchAll : ServerPath = "**"
     
+    ///Creates a path parameter with your provided name
     static func paramter(_ name : String) throws -> ServerPath {
         if name.hasPrefix(":"){
             return try ServerPath(string: name)

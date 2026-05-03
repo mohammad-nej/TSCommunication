@@ -26,13 +26,11 @@ let (result,response) = try await MyHttpRoute
 the same process can be done for other routes in your server :
 ```swift
     extension MyGetHttpRoute : ClientGetRouteProtocol {}
-    extension MyFileUploadable : ClientSmallFileUploadable {} //NOTICE
-    extension MyFileUploadable2 : ClientBigFileUploadable {}  //NOTICE
-    extension MyFileDownloadable : ClientGetRouteProtocol {}
+    extension MySmallFileUploadable : ClientSmallFileUploadable {} 
+    extension MyLargeFileUploadable : ClientLargeFileUploadable {}  
+    extension MyFileDownloadable : ClientFileDownloadable {}
 ```
-#### Notice:
-Routes that conform to `FileUploadable` in `TSShared`, can be extended to both ``ClientSmallFileUploadable`` or ``ClientBigFileUploadable``.
-As their names suggests, each use a different approach to send your file. Small one, uses MultiPart request to send your file along side an optional Json payload, the big one streams a file to server directly from file URL, which is way more efficient for  large files.
+
 ## RequestConfig:
 This type contains all the information needed to connect to a server, the ``HttpClient`` used for sending data and ``URLCreationMode`` options used for your route.
 
@@ -41,7 +39,7 @@ let server = ServerConfiguration(method:.http,domain: "127.0.0.1", port: 8080)
 let requestConfig = RequestConfig(server:server, client:.shared,
                                     delegate: myUrlSessionDelegate ,mode:.safe)
 ```
-it's highly recommended to extend ``RequestConfig`` and create an instance of it for yourself, cause all helper functions provided in this target need an instance of this type in-order to connect to server.
+it's highly recommended to extend ``RequestConfig`` and create an static instance of it for yourself, cause all helper functions provided in this target need an instance of this type in-order to connect to server.
 ```swift
 extension RequestConfig{
     static var myServer : RequestConfig { 
@@ -51,52 +49,17 @@ extension RequestConfig{
 ```
 #### Note:
 ``RequestConfig`` take a type conforming to ``HttpClient`` as it's `client` parameter. This target have already extended ``URLSession`` to act as an ``HttpClient``, meaning that you can insert your own ``URLSession`` object and even it's delegate to your ``RequestConfig``.
-## Encoding/Decoding:
-Encoding and Decoding json is an important part of every app that wants to communicate with a server. By default, all client side protocols use basic `JSONDecoder`/`JSONEncoder` as their encoder/decoder.
 
-You can override this behavior by setting `encoder`/`decoder` static variables on your route
+## ServerResponse
+All helper functions in this package return a ``ServerResponse`` upon completion. This type is just a wrapper around standard `(Data,URLSession)` which is returned from URLSession functions.
+
 ```swift
-extension EchoRoute {
-    static var encoder : JSONEncoder { 
-        //...
-        return myEncoder
-    }
-
-    static var decoder : JSONEncoder { 
-        //...
-        return myEncoder
-    }
-}
+let response = try await DownloadRoute.download(config:.server) // -> server response
+let fileData = try response.asOutput //return the output of this route if possible
+let serverError = try response.asServerError //return the server error if possible
+let result = try response.asResult // Result<OutputData,Failure>
+let tuple = response.asTuple // the original (Data,URLSession)
 ```
-If you want to change decoder/encoder of all your routes at once, you have to take these steps:
-
- 1 - Create a type conforming to EncoderDecoder protocol:
-```swift
-
-public struct SnakeCaseCoding : EncoderDecoder, Sendable   {
-    public static let encoder: JSONEncoder = {
-        let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
-        return encoder
-    }()
-    
-    public static let decoder: JSONDecoder = {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return decoder
-    }()
-}
-```
-2 - Create a new  protocol to shadow client side protocols (like ``ClientGetRouteProtocol``)
-```swift
-protocol SnakeCodingGetRoute : ClientGetRouteProtocol 
-            where Coding == SnakeCaseCoding {}
-```
-3 - Now extend all your routes to your new protocols instead
-```swift
-extension MyGetRoute : SnakeCodingGetHttp {}
-```
-
 
 ## Mocking:
 Mocking is crucial for testing your client app. You can mock your server using `RequestConfig.httpClient` parameter.
@@ -140,6 +103,4 @@ MyRoute.get(config: isOnline ? realServer : offlineServer.config)
 ## Topics
 
 
-### <!--@START_MENU_TOKEN@-->Group<!--@END_MENU_TOKEN@-->
 
-- <!--@START_MENU_TOKEN@-->``Symbol``<!--@END_MENU_TOKEN@-->

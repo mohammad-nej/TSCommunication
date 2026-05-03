@@ -15,7 +15,7 @@ public extension ClientGetRouteProtocol{
     ///     - queryItems: query items in your request
     ///     - config: RequestConf object for this request
     static func get<T:GETHttpClient>(parameters : [String],queryItems : [URLQueryItem] = [], config : RequestConfig<T> ) async throws -> ServerResponse<Self>{
-        guard Self.method == .get else { fatalError("HTTPMethod is not .get") }
+        guard Self.method == .GET else { fatalError("HTTPMethod is not .GET") }
         
         let url = try Self.path.createURL(parameters: parameters,
                                           queryItems: queryItems,

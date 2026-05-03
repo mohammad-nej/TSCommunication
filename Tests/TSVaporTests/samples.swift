@@ -25,7 +25,7 @@ struct SecondTest : ServerFileUploadable {
    
    static let path: ServerPath = "testPath2"
    
-   static let method: TSShared.HttpMethod = .post
+   static let method: TSShared.HttpMethod = .POST
    
 }
 
@@ -55,7 +55,7 @@ struct ThirdTestSimillar : ServerGetRouteProtocol {
 
 }
 
-struct TestRoute : ServerFileUploadable {
+struct BehindBothMiddlewares : ServerFileUploadable {
    static var closure: @Sendable (Vapor.Request) async throws -> Bool {
        return { request in
            let values = request.headers["Test-Header"]
@@ -82,7 +82,7 @@ struct TestRoute : ServerFileUploadable {
    
    static let path: ServerPath = "testPath"
    
-   static let method: TSShared.HttpMethod = .post
+   static let method: TSShared.HttpMethod = .POST
    
 }
 // MARK: Middlewares

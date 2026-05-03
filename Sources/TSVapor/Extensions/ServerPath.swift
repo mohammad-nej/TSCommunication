@@ -9,11 +9,8 @@ import Foundation
 import Vapor
 import TSShared
 
-
-
-
-
-extension ServerPath {
+///Converts ``TSShared/ServerPath`` to `Vapor.PathComponent`
+public extension ServerPath {
     
     var vaporComponents : [PathComponent]{
         self.parts
@@ -35,12 +32,22 @@ extension ServerPath {
     
 }
 
-extension PathComponent {
-    func toServerPath() -> ServerPath {
-       //since we are converting from Vapor path components , it's impossible to fail
-        try! ServerPath(string: self.description)
-    }
+public extension Array where Element == PathComponent {
     
+    func toServerPath() -> ServerPath {
+        let parts = self.map { PathPart(unchecked: $0.description)}
+        return ServerPath(parts: parts)
+    }
+}
+
+extension PathComponent {
+    
+//    
+//    func toServerPath() -> ServerPath {
+//       //since we are converting from Vapor path components , it's impossible to fail
+//        try! ServerPath(string: self.description)
+//    }
+//    
     var isParameter : Bool {
         if self == .anything {
             return true

@@ -25,7 +25,7 @@ import TSShared
 ///                     filename : "config.txt",
 ///                     config: .myConfig)
 ///```
-public protocol  ClientSmallFileUploadable : FileUploadable ,ClientHttpRoute{
+public protocol  ClientSmallFileUploadable : FileUploadable , EncoderDecoder {
     
     ///Responsible for Encoding/Decoding your data
     associatedtype Coding : EncoderDecoder = DefaultCoding

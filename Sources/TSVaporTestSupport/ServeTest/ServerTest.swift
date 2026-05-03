@@ -13,15 +13,14 @@ import TSVapor
 ///
 ///Use case :
 ///```swift
-///let routes : [any AddableRoute] = [ ... ]
 /////Initialize the object
-///let tester = ServerTest(routes: routes,builders: [])
-///
-/////Optionally set closures below
-///tester.preparation = { app in
-/// //Setup your db , ... in here
-/// //This closure runs before adding your routes and before your test begins
+///let tester = ServerTest{ app in
+/// RouteInserter(to:app){
+///     //insert your routes
+/// }
+/// //set up db
 ///}
+///
 ///tester.cleanups = { app in
 /// //Do cleanups in here
 /// //This closure runs when your test finish without throwing
@@ -51,37 +50,14 @@ public final class ServerTest {
     ///
     ///This closure will run after `Application` shutdown
     public var errorCleanup: @Sendable (Error) async throws -> () = { _ in }
+ 
     
-    ///Routes are going to be added to `Application`
-    ///
-    ///These routes will be added **after** `preparation` closure
-//    public var routes : [any AddingCapableRoute.Type]
-    
-    ///Middleware builders that are going to be added to `Application`
-    ///
-    ///These routes will be added **after** `preparation` closure
-//    public var builders : [MiddlewareBuilder]
-    
-  
-    public var registrationOrder : RouteRegistrar.AddingOrder = .middlewareBuildersFirst
-    
-//    public init(routes : [any AddingCapableRoute.Type], builders : [MiddlewareBuilder] ){
-//        self.routes = routes
-//        self.builders = builders
-//    }
-    
-    
-    public init(
-//        routes : [any AddingCapableRoute.Type],
-//                builders : [MiddlewareBuilder] = [],
-                preparation: @escaping AppPreparationClosure = { _ in },
+    public init(preparation: @escaping AppPreparationClosure = { _ in },
                 cleanups: @escaping AppPreparationClosure = { _ in },
                 errorCleanup: @Sendable @escaping (Error) async throws -> () = { _ in } ) {
         self.preparation = preparation
         self.cleanups = cleanups
         self.errorCleanup = errorCleanup
-//        self.routes = routes
-//        self.builders = builders
     }
  
     ///Provides an Application instance for you to run your tests with
@@ -89,11 +65,12 @@ public final class ServerTest {
     ///The `Application` created by this function will shutdown after it's execution, this means that in a single
     ///test function if you  call this function multiple times, those `Application` objects are different.
     ///
-    ///This function also will set ``RouteRegistrar`` to **unsafe** mode, this will let  your tests to run in parallel by swift testing,
     ///```swift
     ///@Test("My route test function")
     ///func testMyRoute() async throws{
-    /// let tester = ServerTest(routes:[...],builders:[...])
+    /// let tester = ServerTest{ app in
+    ///     //Setup 
+    /// }
     /// try await tester.withApp{ app in
     ///     //do your test
     /// }
@@ -107,7 +84,6 @@ public final class ServerTest {
         let app = try await Application.make(.testing)
         do {
             try await preparation(app)
-//            try addRoutes(to: app)
             try await test(app)
             try await cleanups(app)
         }
@@ -118,14 +94,5 @@ public final class ServerTest {
         }
         try await app.asyncShutdown()
     }
-    
-//    func addRoutes(to app: Application) throws {
-//       let registrar = RouteRegistrar(order: registrationOrder)
-//        registrar.mode = .unsafe
-//        registrar.builders = builders
-//        registrar.routes = self.routes
-//        
-//        try registrar.register(on: app)
-//    }
-    
+
 }

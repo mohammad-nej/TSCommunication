@@ -29,7 +29,7 @@ extension RoutesTests {
         
         static let path: TSShared.ServerPath = "greet"
         
-        static let method: TSShared.HttpMethod = .post
+        static let method: TSShared.HttpMethod = .POST
         
         typealias InputData = String
         typealias OutputData = String
@@ -57,18 +57,12 @@ extension RoutesTests {
     
     ///Route for downloading a file from server
     struct DownloadFile : ServerFileDownloadable{
-        typealias InputData = NoData
-    
+       
         static var closure: @Sendable (Vapor.Request) async throws -> Vapor.Response{
             return { req in
                 guard let text = req.parameters.get("text", as: String.self) else {
                     throw Abort(.badRequest)
                 }
-                
-                
-                
-                
-                
                 let data = text.data(using: .utf8)!
                 
                 let url = req.application.directory.workingDirectory.appending("test.txt")
@@ -89,7 +83,7 @@ extension RoutesTests {
         
         static var closure: @Sendable (Vapor.Request) async throws -> Bool{
             return { req in
-                let (file, metadata) = try UploadFile.getFileAndInputData(from: req)
+                let (_, _) = try UploadFile.getFileAndInputData(from: req)
                 
                 return true
             }
@@ -99,7 +93,7 @@ extension RoutesTests {
         
         static let path: TSShared.ServerPath = "uploadFile"
         
-        static let method: TSShared.HttpMethod = .delete
+        static let method: TSShared.HttpMethod = .DELETE
         
     }
 }

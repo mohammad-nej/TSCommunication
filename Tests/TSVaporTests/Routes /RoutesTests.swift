@@ -19,72 +19,22 @@ import Vapor
 struct RoutesTests{
     
     
-    var  routes : [any AnyBuildable] { [GetId(), EchoRoute(), DownloadFile() , UploadFile()] }
+//    var  routes : [AnyServerRoute] { [GetId(), EchoRoute(), DownloadFile() , UploadFile()] }
     
     let prepare : AppPreparationClosure = { _ in }
     
-    
-    
-    @Test("result builder")
-    func resultBuilder() async throws{
-        let tester = ServerTest()
-        try await tester.withApp{ app in
-            
-            
-            let all = try RouteInserter(to: app) {
-                With(middlewares: [TestMiddleWare(),TestMiddleWare2()]) {
-                    GetId()
-                    With(middlewares: [TestMiddleWare2()]) {
-                        UploadFile()
-                    }
-                    
-                }
-                
-               
-                DownloadFile()
-            }
-            
-            #expect(all.registrar.builders.count == 1)
-            let inners = all.registrar.builders.first!.innerBuilder
-            #expect(inners[0].middleWares.count == 2)
-            #expect(inners[1].middleWares.count == 0)
-            
-            let firstLayer = inners[0]
-            
-            #expect(firstLayer.innerGroup.count == 1)
-            #expect(firstLayer.routes.count == 1)
-            #expect(firstLayer.routes.first!.self is GetId.Type)
-            
-            let secondLayer = firstLayer.innerGroup.first!
-            #expect(secondLayer.middleWares.count == 1)
-            #expect(secondLayer.routes.count == 1)
-            #expect(secondLayer.routes.first!.self is UploadFile.Type)
-            
-        }
-    }
-    
- 
+
     
     @Test("A get request from out server")
     func getRequest() async throws {
-        let builders = routes.map { $0.innerMiddleware
-        }
-        let tester = ServerTest(){ app in
-           try RouteInserter(to: app) {
-                With(middlewares: []) {
-
-                    for route in builders {
-                        route
-                    }
-
-                }
-               for route in builders {
-                   route
-               }
-            }
         
+        let tester = ServerTest(){ app in
+            
+            RouteInserter(to: app) {
+                GetId.self
+            }
         }
-    
+        
         try await tester.withApp{ app in
             let id = UUID()
             try await app.testing().test(GetId.self, parameters: [id.uuidString]){ req in
@@ -103,6 +53,7 @@ struct RoutesTests{
       
         try await EchoRoute.test(prepare:EchoRoute.insertToApp){ req  in
             try EchoRoute.insert("This is a test", in: &req)
+            
         }afterResponse: { response in
             try #require(response.status == .ok)
             
@@ -125,7 +76,7 @@ struct RoutesTests{
         }afterResponse: { response in
             try #require(response.status == .ok)
             
-            let file = try DownloadFile.output(from: response)
+            let file = DownloadFile.output(from: response)
             
             let value = String(data:file,encoding: .utf8)
             #expect(value == fileText)

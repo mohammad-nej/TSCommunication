@@ -8,5 +8,5 @@
 
 import Foundation
 
-///This is a phantom type that refers to both UpHttpClient , GetHttpClient, UploadHttpClient
+///This is a phantom type that refers to  UpHttpClient , GetHttpClient, UploadHttpClient
 public protocol _HttpClientable {}

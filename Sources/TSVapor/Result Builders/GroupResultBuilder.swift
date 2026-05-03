@@ -11,28 +11,30 @@ import Vapor
 
 
 
-
+///result builder to create a heterogenous array of routes
+///
+///Use ``Group`` instead of directly using this result builder
 @resultBuilder
 public struct GroupResultBuilder {
     
-    public static func buildBlock(_ components: any ServerGetRouteProtocol.Type...) -> [any ServerGetRouteProtocol.Type] {
+    public static func buildBlock(_ components: any IdentifiableRoute.Type...) -> [any IdentifiableRoute.Type] {
         return components
     }
     
-    public static func buildFinalResult(_ component: [any ServerGetRouteProtocol.Type]) -> [any Groupable.Type ] {
-        var all : [any Groupable.Type] = []
-        for component in component {
-            let value = component
-            all.append(value)
-        }
-        return all
+    public static func buildBlock(_ components: [any IdentifiableRoute.Type]) -> [any IdentifiableRoute.Type] {
+        components
+    }
+
+    public static func buildExpression(_ expression: any IdentifiableRoute.Type...) -> [any IdentifiableRoute.Type] {
+        expression
+    }
+    public static func buildBlock(_ components: [any IdentifiableRoute.Type]...) -> [any IdentifiableRoute.Type] {
+        components.flatMap(\.self)
+    }
+    public static func buildExpression(_ expression: Group) -> [any IdentifiableRoute.Type] {
+        expression.routes
     }
 }
 
 
-public struct Group {
-    let routes: [any Groupable.Type]
-    init(@GroupResultBuilder _ closure : () -> [any Groupable.Type]){
-        self.routes = closure()
-    }
-}
+

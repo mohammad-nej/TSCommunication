@@ -11,7 +11,7 @@ import VaporTestUtils
 import TSVapor
 import Vapor
 
-public extension HttpRoute{
+public extension InputOutputableRoute{
     
     ///Injects your InputData into the request content
     static func insert(_ input : Self.InputData, in  request :  inout TestingHTTPRequest, using encoder : (any ContentEncoder)? = nil) throws where Self.InputData : Content  {

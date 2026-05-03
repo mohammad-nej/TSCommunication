@@ -5,9 +5,10 @@
 //  Created by MohammavDev on 4/23/26.
 //
 
-///Indicates the transfer method used by the vapor server
+///transfer method used by the vapor server
 public enum FileTransferMethod : Sendable , Equatable , Hashable , Codable {
     
+    ///Size of a request 
     public enum Size :Sendable , Codable, Equatable, Hashable {
         case kb(Int) , mb(Int) , gb(Int) , tb(Int)
     }
@@ -15,7 +16,7 @@ public enum FileTransferMethod : Sendable , Equatable , Hashable , Codable {
     ///Used when you want to stream a file to you vapor server
     case stream
     
-    ///Indicates the max amount of request size in this route. the number is in mb
+    ///max amount of request size in this route.
     case  collect(Size)
     
     ///The vapor default option
