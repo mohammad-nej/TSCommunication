@@ -19,7 +19,6 @@ public extension ServerTest {
     ///
     ///You can test your routes with ease :
     ///```swift
-    ///
     ///try await tester.test(MyRoute.self){req in
     ///
     ///}afterResponse:{ response in
@@ -30,7 +29,7 @@ public extension ServerTest {
                               parameters : [String] = [],
                               headers : HTTPHeaders = [:],
                               body : ByteBuffer? = nil,
-                              mode : URLCreationMode = .safe,
+                              mode : URLCreationMode = .checked,
                               beforeRequest: (inout TestingHTTPRequest) async throws -> () = { _ in },
                               afterResponse: (TestingHTTPResponse) async throws -> () = { _ in }) async throws{
         return try await self.withApp { app in

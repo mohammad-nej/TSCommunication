@@ -13,7 +13,7 @@ import Vapor
 
 public extension ServerFileUploadable {
     
-    ///Creates a multipart test request and injects your  data and metaData in the request
+    ///Creates a multipart  request and injects your  data and metaData in the test request
     ///
     ///```swift
     /////on your beforeRequest closure in route testing

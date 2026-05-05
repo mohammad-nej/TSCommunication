@@ -31,6 +31,7 @@ public extension MockUpServer{
         
     }
     
+    ///Always returns the provided server error
     init<T:OutputableRoute>(for route : T.Type,throws value : T.Failure) where Out : Sendable,T.Failure == Out{
         self.uploadData = { _, _ in
             return (value,URLResponse())

@@ -5,7 +5,7 @@ Makes testing your server easier
 ## Overview
 This package is all about making your tests easier by extending both Vapor and TSVapor types to let you test your routes with ease.
 ## ServerTest
-This type lets you create an instance of `Application` on test mode, do some preparations( like preparing your db, ... ), cleanups and error cleanups before start testing your routes.
+This type lets you create an instance of `Application` on test mode, do some preparations( like preparing your db, ... ), cleanups and error cleanups before/after  testing your routes.
 ```swift
 let tester = ServerTest{ app in 
     //do your preparation setup in here
@@ -19,9 +19,9 @@ try await tester.withApp{ app in
     }
 }
 ```
-- Important: `withApp` function will create and destroy an instance of `Application` , meaning that each time you call it, you will get a **FRESH** instance.
+- Important: `withApp` function will create and destroy an instance of `Application` , meaning that each time you call it, all your preparation/cleanup closures will rerun.
 ## Testing Routes
-while ``ServerTest`` can be useful to test multiple routes at once, if you want to test a single route in your test function, there are better ways :
+While ``ServerTest`` can be useful to test multiple routes at once, if you want to test a single route in your test function, there are better ways :
 ```swift
 MyRouteToTest.test(preparation: preparationClosure){ request in 
     //prepare request

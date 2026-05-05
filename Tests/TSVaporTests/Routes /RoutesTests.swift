@@ -17,14 +17,9 @@ import Vapor
 
 @Suite("Testing different routes to a server")
 struct RoutesTests{
-    
-    
-//    var  routes : [AnyServerRoute] { [GetId(), EchoRoute(), DownloadFile() , UploadFile()] }
-    
+        
     let prepare : AppPreparationClosure = { _ in }
-    
 
-    
     @Test("A get request from out server")
     func getRequest() async throws {
         

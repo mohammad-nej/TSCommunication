@@ -11,38 +11,19 @@ import Foundation
 
 
 
-///Indicates whether you want strict checking or not?
-///
-///`URLCreationMode.safe` will  ensure that the amount of parameters you passed in, is equal to the amount of parameters your `ServerPath` needs.
-///
-///
-///- Warning: Using `unsafe` mode will slightly improve performance but it might cause your app to crash if you pass in insufficient amount of parameters.
-public enum URLCreationMode : Equatable , Hashable , Sendable{
-    ///In safe mode, url parameters count are checked to match the `ServerPath` required amount of parameters
-    ///
-    ///This will make sure that you don't accidentally miss a parameter or don't crash because of passing insufficient amount of parameters
-    case safe
-    
-    
-    ///Completely disabling bound checking
-    ///
-    /// - Warning: While disabling bound checking could slightly speed up the process, function might crash if you pass in insufficient amount of  parameters
-    case unsafe
-}
+
 
 
 public extension ServerPath {
     
     ///Creates a valid URLComponent string from itself by inserting parameters in the string
-    ///
-    /// - Warning: URLCreationMode.unsafe will crash at runtime if you don't pass enough amount of parameters.
     func urlValidPath(with parameters : [String], mode : URLCreationMode) throws -> String {
         var urlPath: [String] = []
        
         var expectedParams = 0
         var hasCatchAll = false
         
-        if mode == .safe{
+        if mode == .checked{
             //bound checking
             for part in self.parts {
                 if part == .catchAll {
@@ -78,9 +59,19 @@ public extension ServerPath {
                 parameterIndex = parameters.count
                 break
             } else {
+                //in case of extra parameters
+                guard parameterIndex < parameters.count else {
+                    logger.warning("Extra amount of parameters in path : \(self.description)")
+                    continue
+                }
                 urlPath.append(parameters[parameterIndex])
                 parameterIndex += 1
             }
+        }
+        
+        
+        if parameterIndex != parameters.count {
+            logger.warning("Insufficient amount of parameters in path : \(self.description), Expected : \(parameters.count) , received : \(parameterIndex.description)")
         }
         
         return urlPath.joined(separator: "/")

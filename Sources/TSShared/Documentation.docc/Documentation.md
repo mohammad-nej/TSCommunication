@@ -1,6 +1,6 @@
 # ``TSShared``
 
-Contains your routes
+Contains your routes being shared between Client and Server
 
 ## Overview
 
@@ -9,7 +9,7 @@ server and client app can have access to them in a type- safe manner.
 
 ## Details
 
-This packages has 6 main protocols, each route should conform to 1 one of them depending on your needs:
+This packages has 6 main protocols, each route should conform to one of them depending on your needs:
 
 @TabNavigator{
     @Tab("HttpRoute"){
@@ -166,7 +166,7 @@ public struct MyRoute: GetHttpRoute{
     FailureCoder = SnakeCaseCoding
 }
 ```
-this protocol also introduces an ``EncoderDecoder`` type for encoding/decoding errors, which can be overridden by setting ``Failable/failureEncoder`` and ``Failable/failureDecoder`` on your chosen type.
+This protocol also introduces an ``EncoderDecoder`` type for encoding/decoding errors, which can be overridden by setting ``Failable/failureEncoder`` and ``Failable/failureDecoder`` on your chosen type.
 ## ServerPath: 
 As you might have noticed a type called ``ServerPath`` is used to receive the path of your route, make sure to check it'd documentation for more info
 

@@ -17,7 +17,6 @@ import TSShared
 /// //do migrations
 ///}
 ///```
-/// - Important: All helpers in this target, will register your routes to server. don't use this closure for inserting your routes into your server.
 public typealias AppPreparationClosure = @Sendable (Application) async throws -> Void
 
 public extension TestingApplicationTester {
@@ -38,7 +37,7 @@ public extension TestingApplicationTester {
                                parameters : [String] = [],
                                headers : HTTPHeaders = [:],
                                body : ByteBuffer? = nil,
-                               mode : URLCreationMode = .safe,
+                               mode : URLCreationMode = .checked,
     beforeRequest: (inout TestingHTTPRequest) async throws -> () = { _ in },
     afterResponse: (TestingHTTPResponse) async throws -> () = { _ in }) async throws
     -> any TestingApplicationTester

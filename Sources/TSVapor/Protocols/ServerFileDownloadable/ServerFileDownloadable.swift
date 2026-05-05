@@ -9,6 +9,16 @@ import TSShared
 import Vapor
 
 ///Used for routes that let clients download a large file into their devices
+///
+///By conforming to this protocol you can send the requested file using ``send`` function
+///```swift
+///extension MyVideoDownload : ServerFileDownloadable{
+/// var closure : ... { req in
+///     //...
+///     return try await MyVideoDownload.send(file: fileURL, request: req)
+/// }
+///}
+///```
 public protocol ServerFileDownloadable :  FileDownloadable,AnyHttpRoute, FileTransferMethodable where OutputData == Data, ClosureResponse == Response{
     
 }

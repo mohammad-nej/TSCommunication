@@ -11,13 +11,6 @@ import Vapor
 import Synchronization
 
 
-
-
-///A type that indicates routes that can be registered to server
-///
-///All your routes will conform to this type xD
-//public typealias Registrable = GetHttpRoute & AddingCapableRoute
-
 ///Registers all your routes into vapor
 ///
 ///This type can't be initialized directly, use ``RouteInserter`` instead.

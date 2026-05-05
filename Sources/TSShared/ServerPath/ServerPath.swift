@@ -56,7 +56,8 @@ extension ServerPath : CustomStringConvertible{
         return pathWithFirstSlash
     }
     
-    public  var pathWithoutFirstSlash: String {
+    
+    public var pathWithoutFirstSlash: String {
         if value.starts(with: "/"){
             return String(value.dropFirst())
         }

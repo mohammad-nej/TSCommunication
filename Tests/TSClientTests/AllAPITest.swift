@@ -56,15 +56,11 @@ struct RequestSender {
     func downloadFile() async throws {
         
         let error = VaporError(error: true, reason: "error from server")
-        
+        let fileData = "Test".data(using: .utf8)!
         let downloadResponse = try await FileDownloadableTest.download(
             parameters: [],
-            config: FileDownloadableTest.mockConfig(
-                always: "Test".data(
-                    using: .utf8
-                )!
-            )
-        )
+            config: FileDownloadableTest.mockConfig(always: fileData))
+        
         let download = try downloadResponse.asOutput
         let downloadEnum = try downloadResponse.asResult
         let downloadErrorResponse = try await FileDownloadableTest.download(
@@ -73,8 +69,8 @@ struct RequestSender {
         let downloadEnumError = try downloadErrorResponse.asResult
         let downloadError = try downloadErrorResponse.asServerError
         
-        #expect(downloadEnum == .success("Test".data(using: .utf8)!))
-        #expect(download == "Test".data(using: .utf8)!)
+        #expect(downloadEnum == .success(fileData))
+        #expect(download == fileData)
         #expect(downloadError == error)
         #expect(downloadEnumError == .failure(error))
         

@@ -8,4 +8,14 @@
 import Foundation
 
 
-extension URLSession : HttpClient {}
+///Extending URLSession to act as a HttpClient
+extension URLSession : HttpClient{}
+
+
+///Extenind URLSession to act as a WebSocketClient
+extension URLSession : WebSocketClient {
+    public typealias Session = URLSessionWebSocketTask
+}
+
+
+extension URLSessionWebSocketTask : WebSocketSession {}

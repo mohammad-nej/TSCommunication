@@ -48,7 +48,8 @@ struct URLCreationTests {
             switch value {
             case .unknownFormat(let data):
                 #expect(data == invalid)
-           
+            default:
+                break
             }
         }
         
@@ -62,7 +63,7 @@ struct URLCreationTests {
         
         let queryItems = ["name" : "something"]
         let path : ServerPath = "users/:id/posts"
-        let url = try path.createURL(parameters: [id], queryItems: queryItems , server: .local, mode: .safe)
+        let url = try path.createURL(parameters: [id], queryItems: queryItems , server: .local, mode: .checked)
         
         let expected = ServerConfiguration.local.url!
             .appending(path: "users")
@@ -73,11 +74,11 @@ struct URLCreationTests {
         #expect(url == expected)
         
         #expect(throws: URLConversionError.insufficientAmountOfParameters) {
-            try path.createURL(parameters: [], queryItems: queryItems, server: .local, mode: .safe)
+            try path.createURL(parameters: [], queryItems: queryItems, server: .local, mode: .checked)
         }
         
         #expect(throws: URLConversionError.extraAmountOfParameters){
-            try path.createURL(parameters: [id , "myname"], queryItems: queryItems, server: .local, mode: .safe)
+            try path.createURL(parameters: [id , "myname"], queryItems: queryItems, server: .local, mode: .checked)
         }
         
         let expected2 = ServerConfiguration.local.url!
@@ -89,18 +90,18 @@ struct URLCreationTests {
         
         let path2 : ServerPath = "users/:id/posts/*/**"
         
-        let url2 = try path2.createURL(parameters: [id,"something","someother"], server: .local, mode: .safe)
+        let url2 = try path2.createURL(parameters: [id,"something","someother"], server: .local, mode: .checked)
         
         #expect(url2 == expected2)
         
         #expect(throws: URLConversionError.insufficientAmountOfParameters) {
-            try path2.createURL(parameters: [id], server: .local, mode: .safe)
+            try path2.createURL(parameters: [id], server: .local, mode: .checked)
         }
         
         let expected3 = expected2
             .appending(path: "some more things")
             
-        let url3 = try path2.createURL(parameters: [id,"something","someother", "some more things"], server: .local, mode: .safe)
+        let url3 = try path2.createURL(parameters: [id,"something","someother", "some more things"], server: .local, mode: .checked)
         #expect(url3 == expected3)
     }
     

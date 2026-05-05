@@ -51,7 +51,7 @@ public final class ServerTest {
     ///This closure will run after `Application` shutdown
     public var errorCleanup: @Sendable (Error) async throws -> () = { _ in }
  
-    
+    ///Creates a server test
     public init(preparation: @escaping AppPreparationClosure = { _ in },
                 cleanups: @escaping AppPreparationClosure = { _ in },
                 errorCleanup: @Sendable @escaping (Error) async throws -> () = { _ in } ) {

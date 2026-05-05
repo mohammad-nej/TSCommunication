@@ -16,7 +16,7 @@ public enum FileTransferMethod : Sendable , Equatable , Hashable , Codable {
     ///Used when you want to stream a file to you vapor server
     case stream
     
-    ///max amount of request size in this route.
+    ///max amount of request content size in this route.
     case  collect(Size)
     
     ///The vapor default option

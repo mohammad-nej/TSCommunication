@@ -18,16 +18,16 @@ import Foundation
 ///}
 ///```
 public struct MockGetServer<O : Encodable >: GETHttpClient, Sendable {
-    
-   
-    
+        
     public var encoder : JSONEncoder
     
     let download : @Sendable (URLRequest) async throws -> (O, URLResponse)
         
     public func data(for url : URLRequest, delegate: (any URLSessionTaskDelegate)? = nil) async throws -> (Data, URLResponse) {
         let (value,response) = try await download(url)
+       
         let data = try encoder.encode(value)
+       
         return (data,response)
     }
 

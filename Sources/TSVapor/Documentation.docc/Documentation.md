@@ -1,11 +1,9 @@
 # ``TSVapor``
 
-Make routes in your server Type-Safe
+Make routes in your server Type-Safe, DSL to organize and insert your routes
 
 ## Overview
-
 This package introduces more protocols, DSL for adding your route to vapor, and helper functions to help you with your routes.
-
 ## Protocols
 Just like the client side, this package also introduce 6 main protocols.
 
@@ -42,9 +40,9 @@ Just like the client side, this package also introduce 6 main protocols.
     
     @Tab("ServerFileDownloadable"){
 
-        extend your ``TSShared/FileDownloadable`` route to conform to this protcol.
+        extend your ``FileDownloadable`` route to conform to this protcol.
         
-        Notice that in this case the output type of the closure is not your route `OutputData` but **Vapor.Response** instead. This is because vapor needs you to send the `Response` object back when streaming a file to client
+        - Note: in this case the output type of the closure is not your route `OutputData` but **Vapor.Response** instead. This is because vapor needs you to send the `Response` object back when streaming a file to client
         ```swift
         extension MyFileUploadRoute : ServerFileDownloadable{
             static var closure: @Sendable (Vapor.Request) async throws -> Vapor.Response{
@@ -62,7 +60,7 @@ Just like the client side, this package also introduce 6 main protocols.
     }  
     @Tab("ServerLargeFileUploadable"){
 
-        extend your ``TSShared/LargeFileUploadable`` routes to conform to this protocol.
+        extend your ``LargeFileUploadable`` routes to conform to this protocol.
         ```swift
         extension MyLargeFileUploader : ServerLargeFileDownloadable{
             static var closure: @Sendable (Vapor.Request) async throws -> OutputData{
@@ -91,7 +89,7 @@ Just like the client side, this package also introduce 6 main protocols.
     } 
     @Tab("ServerWebSocket"){
 
-        extend your ``TSShared/WebScoketRoute`` routes to conform to this protocol.
+        extend your ``WebScoketRoute`` routes to conform to this protocol.
         ```swift
          extension MyWebSocketRoute : ServerWebSocket{
              static var onUpgrade : WebSocketOnUpgrade {

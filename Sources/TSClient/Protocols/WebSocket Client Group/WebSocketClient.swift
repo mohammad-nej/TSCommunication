@@ -21,12 +21,6 @@ public protocol WebSocketClient {
     func webSocketTask(with url: URL, protocols: [String]) -> Session
 }
 
-extension URLSession : WebSocketClient {
-    public typealias Session = URLSessionWebSocketTask
-}
-
-
-extension URLSessionWebSocketTask : WebSocketSession {}
 
 public extension WebSocketClient where Self == URLSession{
     ///`URLSession.shared` as client

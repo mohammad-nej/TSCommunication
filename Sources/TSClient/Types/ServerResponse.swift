@@ -9,10 +9,15 @@ import TSShared
 
 
 public enum ServerResponseError : Error , LocalizedError {
-    case unknownFormat(Data)
+    case unknownFormat(Data) , outputMustBeData
     
     public var errorDescription: String? {
-        "Data received from server is in unknown format."
+        switch self{
+        case .unknownFormat( _):
+            "Data received from server is in unknown format."
+        case .outputMustBeData:
+            "Output must be Data"
+        }
     }
 }
 
@@ -32,7 +37,7 @@ public enum ServerResponseError : Error , LocalizedError {
 ///try await GetDataRoute.get(parameters : [], config:config)
 ///                             .asResult //-> Result<OutputData,Failure>
 ///
-/////if you want the plain tuple stye
+/////if you want the plain tuple style
 ///try await GetDataRoute.get(parameters : [], config:config)
 ///                             .asTuple //-> (Data,URLResponse)
 ///```
@@ -76,14 +81,18 @@ public struct ServerResponse< T : OutputableRoute> : Sendable , Equatable , Hash
     /// - throws: Will throw `ServerResponseError.unknownFormat(Data)` error if responses data is not in correct format.
     public var asResult  : Result<T.OutputData,T.Failure> {
         get throws{
-            let output = try? self.asOutput
-            if let output{
-                return .success(output)
-            }
-            
+           
+            //We first check for failure then for the success because
+            //If T is any ClientFileDownloadable, since the output type of success is Data,
+            //and Data will match against anything, we have to check for failure first
             let failure = try? self.asServerError
             if let failure{
                 return .failure(failure)
+            }
+            
+            let output = try? self.asOutput
+            if let output{
+                return .success(output)
             }
             
             throw ServerResponseError.unknownFormat(data)

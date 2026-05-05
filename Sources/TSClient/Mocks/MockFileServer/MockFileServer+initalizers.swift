@@ -30,6 +30,7 @@ public extension MockFileServer {
         
     }
 
+    ///Always returns the provided server error
     init<T:ClientLargeFileUploadable>(for route : T.Type,throws value : T.Failure) where Out : Sendable , Out == T.Failure{
         self.uploadFile = { _, _ in
             return (value,URLResponse())

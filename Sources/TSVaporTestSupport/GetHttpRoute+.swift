@@ -21,7 +21,7 @@ public extension GetHttpRoute {
     }
 }
 
-//since all routes conform to AnyHttpRoute , this extension will be available to all routes
+//Since all routes conform to AnyHttpRoute , this extension will be available to all routes
 public extension AnyHttpRoute  {
     
     ///Convenient function for testing your app
@@ -40,7 +40,7 @@ public extension AnyHttpRoute  {
         parameters : [String] = [],
         headers : HTTPHeaders = [:],
         body : ByteBuffer? = nil,
-        mode : URLCreationMode = .safe,
+        mode : URLCreationMode = .checked,
         prepare : @escaping AppPreparationClosure ,
         beforeRequest: (inout TestingHTTPRequest) async throws -> () = { _ in },
         afterResponse: (TestingHTTPResponse) async throws -> () = { _ in }) async throws
