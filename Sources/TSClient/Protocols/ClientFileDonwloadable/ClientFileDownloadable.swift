@@ -13,15 +13,21 @@ import Foundation
 ///
 ///You can download your files from server using ``download(parameters:queryItems:config:)-(_,[URLQueryItem],_)`` function
 ///```swift
-///let data = try await DownloadImage.download(config : .server)
+///let data = try await DownloadImage.download(server : .server)
 ///                                     .asOutput
 ///```
 public protocol ClientFileDownloadable : FileDownloadable , EncoderDecoder {
     
     
-    static func download<T:GETHttpClient>(parameters : [String], queryItems : [String : String], config : RequestConfig<T>  ) async throws -> ServerResponse<Self>
+    static func download(parameters : [String], queryItems : [String : String],server: ServerConfiguration,
+                         client: any GETHttpClient,
+                         config : Configuration,
+                         modify : RequestModifier ) async throws -> ServerResponse<Self>
     
-    static func download<T:GETHttpClient>(parameters : [String],queryItems : [URLQueryItem], config : RequestConfig<T> ) async throws -> ServerResponse<Self>
+    static func download(parameters : [String],queryItems : [URLQueryItem], server: ServerConfiguration,
+                         client: any GETHttpClient,
+                         config : Configuration,
+                         modify : RequestModifier) async throws -> ServerResponse<Self>
     
     static var timeoutInterval : TimeInterval? { get }
     

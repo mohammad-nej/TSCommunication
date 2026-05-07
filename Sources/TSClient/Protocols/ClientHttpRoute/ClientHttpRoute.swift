@@ -18,14 +18,20 @@ import TSShared
 ///By conforming to this protocol you will get access to `send` function:
 ///```swift
 ///try await AddContactRoute
-///     .send(contactDTO, config : .myConfig)
+///     .send(contactDTO, server:.myServer)
 ///```
 public protocol ClientHttpRoute : HttpRoute {
     
     
-    static func send<T:UpHttpClient>(_ data : InputData , parameters : [String], queryItems : [String : String] ,config : RequestConfig<T>) async throws -> ServerResponse<Self>
+    static func send(_ data : InputData , parameters : [String], queryItems : [String : String]       , server: ServerConfiguration,
+                     client: any UpHttpClient ,
+                     config : Configuration ,
+                     modify : RequestModifier ) async throws -> ServerResponse<Self>
     
-    static func send<T:UpHttpClient>(_ data : InputData, parameters : [String], queryItems : [URLQueryItem] ,config : RequestConfig<T>) async throws -> ServerResponse<Self>
+    static func send(_ data : InputData, parameters : [String], queryItems : [URLQueryItem]       , server: ServerConfiguration,
+                                     client: any UpHttpClient,
+                                     config : Configuration ,
+                                     modify : RequestModifier) async throws -> ServerResponse<Self>
     
     static var timeoutInterval : TimeInterval? { get }
 }

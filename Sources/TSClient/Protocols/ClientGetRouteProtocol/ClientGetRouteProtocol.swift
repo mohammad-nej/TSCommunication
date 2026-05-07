@@ -15,15 +15,15 @@ import Foundation
 ///```swift
 ///let (result,response) =
 /// try await MyGetRoute
-///         .get(paramters:[],config:.myConfig)
+///         .get(paramters:[],server:.myServer)
 ///```
 public protocol ClientGetRouteProtocol : GetHttpRoute, EncoderDecoder {
     
     associatedtype Coding : EncoderDecoder = DefaultCoding
     
-    static func get<T:GETHttpClient>(parameters : [String], queryItems : [String : String], config : RequestConfig<T>  ) async throws -> ServerResponse<Self>
+    static func get(parameters : [String], queryItems : [String : String],server : ServerConfiguration , client : any GETHttpClient, config : Configuration,modify : RequestModifier ) async throws -> ServerResponse<Self>
     
-    static func get<T:GETHttpClient>(parameters : [String],queryItems : [URLQueryItem], config : RequestConfig<T> ) async throws -> ServerResponse<Self>
+    static func get(parameters : [String],queryItems : [URLQueryItem],server : ServerConfiguration , client : any GETHttpClient, config : Configuration,modify : RequestModifier  ) async throws -> ServerResponse<Self>
     
     static var timeoutInterval : TimeInterval? { get }
 }

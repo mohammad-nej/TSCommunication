@@ -15,7 +15,7 @@ import TSShared
 ///This can be used by routes that send a small file with some meta data to server.
 ///
 ///This protocol will send the entire file in **one** multipart request, while this is not a problem for smaller files, if you file
-///is big consider using ``ClienBigFileUploadable`` instead
+///is big consider using ``ClientLargeFileUploadable`` instead
 ///
 ///By conforming to this protocol you will get access to `upload` function:
 ///```swift
@@ -23,7 +23,7 @@ import TSShared
 ///             .upload(metaData: "test",
 ///                     data: fileData,
 ///                     filename : "config.txt",
-///                     config: .myConfig)
+///                     server:.myServer)
 ///```
 public protocol  ClientSmallFileUploadable : FileUploadable , EncoderDecoder {
     
@@ -32,9 +32,15 @@ public protocol  ClientSmallFileUploadable : FileUploadable , EncoderDecoder {
     
     static var timeoutInterval: TimeInterval { get }
     
-    static func upload<T:UpHttpClient>(metaData : InputData? , data : Data,filename : FileName, parameters : [String], queryItems : [URLQueryItem]  ,config : RequestConfig<T> ) async throws -> ServerResponse<Self>
+    static func upload(metaData : InputData? , data : Data,filename : FileName, parameters : [String], queryItems : [URLQueryItem]  , server: ServerConfiguration,
+                                       client: any UpHttpClient,
+                                       config : Configuration,
+                                       modify : RequestModifier ) async throws -> ServerResponse<Self>
     
-    static func upload<T:UpHttpClient>(metaData : InputData? , data : Data,filename : FileName, parameters : [String], queryItems : [String:String]   ,config : RequestConfig<T>) async throws -> ServerResponse<Self>
+    static func upload(metaData : InputData? , data : Data,filename : FileName, parameters : [String], queryItems : [String:String] , server: ServerConfiguration,
+                       client: any UpHttpClient,
+                       config : Configuration,
+                       modify : RequestModifier ) async throws -> ServerResponse<Self>
 }
 
 public extension ClientHttpRoute where OutputData : Sendable {

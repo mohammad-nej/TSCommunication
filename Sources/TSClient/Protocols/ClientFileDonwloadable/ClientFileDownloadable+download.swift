@@ -14,44 +14,59 @@ public extension ClientFileDownloadable {
     
     ///Get some information from server
     /// - Parameters:
-    ///     - parameters: if your server route has a parameter, you should pass them in here
-    ///     - queryItems: query items in your request
-    ///     - config: RequestConf object for this request
-    static func download<T:GETHttpClient>(parameters : [String],queryItems : [URLQueryItem] = [], config : RequestConfig<T> ) async throws -> ServerResponse<Self>{
+    ///   - parameters: if your server route has a parameter, you should pass them in here
+    ///   - queryItems: query items in your request
+    ///   - server: server information for this request
+    ///   - client: client used to send this request
+    ///   - config: configuration for this request
+    ///   - modify: lets you modify the request object directly
+    static func download(parameters : [String],queryItems : [URLQueryItem] = []  , server: ServerConfiguration,
+                         client: any GETHttpClient = .shared,
+                         config : Configuration = .default,
+    modify : RequestModifier = { _ in } ) async throws -> ServerResponse<Self>{
         if Self.method != .GET  {
             logger.warning("HTTPMethod for \(Self.routeId) is not GET.")
         }
         
         let url = try Self.path.createURL(parameters: parameters,
                                           queryItems: queryItems,
-                                          server: config.server,
-                                          mode: config.urlSafetyCheckMode)
+                                          server: server,
+                                          mode: config.urlCheckMode)
         
         var request = URLRequest(url: url)
         request.httpMethod = Self.method.rawValue
         if let timeoutInterval{
             request.timeoutInterval = timeoutInterval
         }
+        try modify(&request)
+        let (data, response) = try await client.data(for: request, delegate: config.delegate)
         
-        let (data, response) = try await config.httpClient.data(for: request, delegate: config.delegate)
-
         return  .init(Self.self,data: data, response: response)
         
     }
     
-    @_disfavoredOverload
+   
     ///Get some information from server
     /// - Parameters:
     ///     - parameters: if your server route has a parameter, you should pass them in here
     ///     - queryItems: query items in your request
-    ///     - server: base address of your server
-    ///     - mode: the mode that is used to validate your url
-    static func download<T:GETHttpClient>(parameters : [String],queryItems : [String : String],config : RequestConfig<T> ) async throws -> ServerResponse<Self>{
+    ///     - server: server information for this request
+    ///     - client: client used to send this request
+    ///     - config: configuration for this request
+    ///     - modify: lets you modify the request object directly
+    @_disfavoredOverload
+    static func download(parameters : [String],queryItems : [String : String], server: ServerConfiguration,
+                         client: any GETHttpClient = .shared,
+                         config : Configuration = .default,
+                         modify : RequestModifier = { _ in } ) async throws -> ServerResponse<Self>{
         
         let items = queryItems.toQueryItem
         return try await download(parameters: parameters,
-                             queryItems: items,
-                             config: config)
+                                  queryItems: items,
+                                  server: server,
+                                  client: client,
+                                  config: config,
+                                  modify: modify)
         
     }
     

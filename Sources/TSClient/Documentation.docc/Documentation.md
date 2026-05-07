@@ -20,7 +20,7 @@ let response = try await MyHttpRoute
                                     .send(inputJson,
                                         parameters:["some"],
                                         queryItems: ["name" : "jackson"],
-                                        config:.server)
+                                        server:.server)
 ```
 The same process can be done for other routes in your server :
 ```swift
@@ -30,30 +30,38 @@ The same process can be done for other routes in your server :
     extension MyFileDownloadable : ClientFileDownloadable {}
 ```
 
-## RequestConfig:
-This type contains all the information needed to connect to a server, the ``HttpClient`` used for sending data and ``URLCreationMode`` options used for your route.
+## Request Customization:
+All helper functions in this target, provides so many customizations to your requests.
+- You can use `client` parameter to inject your own instance of ``URLSession``, otherwise `URLSession.shared` instance will be used.
+- `config` parameter can be used to pass in a `URLSessionTaskDelegate` if you want.
+- `modify` closure will let you customize the request object, depending on your needs.
 
 ```swift
-let server = ServerConfiguration(method:.http,domain: "127.0.0.1", port: 8080)
-let requestConfig = RequestConfig(server:server, client:.shared,
-                                    delegate: myUrlSessionDelegate ,mode:.safe)
+var mySession = URLSession()
+//setup your own url session
+//...
+var config = Configuration(delegate:MySessionDelegate())
+
+let result = try await MyDownloadRoute.get(parameters:[],server:.myServer, client: mySession, config: config){ request in 
+    //add your custom headers, ...
+}.asOutput
 ```
-it's highly recommended to extend ``RequestConfig`` and create an static instance of it for yourself, cause all helper functions provided in this target need an instance of this type in-order to connect to server.
+it's highly recommended to extend ``ServerConfiguration`` and create an static instance of it for yourself, cause all helper functions provided in this target need an instance of this type in-order to connect to server.
 ```swift
-extension RequestConfig{
-    static var myServer : RequestConfig { 
+extension ServerConfiguration{
+    static var myServer : ServerConfiguration { 
         //..
     }   
 }
 ```
 - Note:
-``RequestConfig`` take a type conforming to ``HttpClient`` as it's `client` parameter. This target have already extended ``URLSession`` to act as an ``HttpClient``, meaning that you can insert your own ``URLSession`` object and even it's delegate to your ``RequestConfig``.
+All helpers functions use `URLCreationMode.checked` by default, which means that your parameters count is checked before sending a request, you will get an error if you pass in incorrect amount of parameters.
 
 ## ServerResponse
 All helper functions in this package return a ``ServerResponse`` upon completion. This type is just a wrapper around standard `(Data,URLSession)` which is returned from URLSession functions.
 
 ```swift
-let response = try await DownloadRoute.download(config:.server) // -> server response
+let response = try await DownloadRoute.download(server:.server) // -> server response
 let fileData = try response.asOutput //return the output of this route if possible
 let serverError = try response.asServerError //return the server error if possible
 let result = try response.asResult // Result<OutputData,Failure>
@@ -61,31 +69,30 @@ let tuple = response.asTuple // the original (Data,URLSession)
 ```
 
 ## Mocking:
-Mocking is crucial for testing your client app. You can mock your server using `RequestConfig.httpClient` parameter.
+Mocking is crucial for testing your client app. You can mock your server using `client` parameter.
 ``HttpClient`` can be mocked to send your request to a mock object instead.
 
 Five different mock servers ``MockHttpServer``, ``MockDownloadServer`` ,``MockGetServer``, ``MockUpServer``, ``MockFileServer`` are already provided in this target. You can easily create a mock config for your route:
 ```swift
 //Creats a mock server that always returns hello
-let mock = MockGetServer(MyGetRoute.self){ request in
+let mockClient = MockGetServer(MyGetRoute.self){ request in
     return ("Received",URLSession())
 }
-let mockConfig = mock.config 
 
-try await MyGetRoute.get(parameters:[],config : mockConfig)
+try await MyGetRoute.get(parameters:[],client : mockClient)
 ```
-Moreover than that, all Client side protocols provide an appropriate mockConfig depending on their type:
+Moreover than that, all Client side protocols provide an appropriate mockClient depending on their type:
 ```swift
 let response = try await MyPostRoute.send("some data",
-                                            config: MyPostRoute.mockConfig(always:true))
+                                            client: MyPostRoute.mockClient(always:true))
 ```
 You can also mock server error :
 ```swift
 let error = VaporError(error:true, reason:"This is a test")
 let response = try await MyPostRoute.send("some data",
-                                            config: MyPostRoute.mockConfig(throws:error))
+                            client: MyPostRoute.mockClient(throws:error))
 ```
-### Pro tip:
+### Pro Tip:
 Since ``MockHttpServer`` input and output is `Data`, it can be used as `HttpClient` for all routes. This means that, not only it can be used as a mock server, but also it can be your **Offline Server**. You can pass it to your routes `config` parameter while your server/client is offline:
 ```swift
 let offlineServer = MockHttpServer{data , req in

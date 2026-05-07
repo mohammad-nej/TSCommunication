@@ -25,18 +25,26 @@ struct MocksTests {
     @Test("Get server mock")
     func getClientResponder() async throws {
         
-        let serverMock = MockGetServer(for: SampleGetRoute.self, always: true)
+        let serverMock = MockGetServer { request in
+            if let value = request.value(forHTTPHeaderField: "Test header"), value == "hello"{
+                return (true,URLResponse())
+            }
+            return (false,URLResponse())
+        }
         
-        let config = serverMock.config
-        let result = try await SampleGetRoute.get(parameters: [], config: config).asOutput
+//        let config = serverMock.config
+        let result = try await SampleGetRoute.get(parameters: [],server: .test,client:serverMock){ request in
+            request.setValue("hello", forHTTPHeaderField: "Test header")
+        }
+        .asOutput
         #expect(result)
         
         let returnValue = false
         let logicalMock = MockGetServer(for: SampleGetRoute.self) { request in
             return (returnValue,URLResponse())
         }
-        let config2 = logicalMock.config
-        let result2 = try await SampleGetRoute.get(parameters: [], queryItems: [], config: config2).asOutput
+        
+        let result2 = try await SampleGetRoute.get(parameters: [], queryItems: [],server: .test,client:logicalMock).asOutput
         #expect(!result2)
         
     }
@@ -49,25 +57,26 @@ struct MocksTests {
             let result = data.contains(hello)
             return (result,URLResponse())
         }
-        let config = serverMock.config
+        
         
         
         let value = try await FileUploadePath.upload(metaData: "this is meta data",
                                          data: "test data".data(using: .utf8)!,
-                                                     filename: "file.txt", config: config).asOutput
+                                                     filename: "file.txt", server: .test,client: serverMock).asOutput
         
         #expect(!value)
         
         let value2 = try await FileUploadePath.upload(metaData: "hello",
                                          data: "test data".data(using: .utf8)!,
-                                                      filename: "file.txt", config: config).asOutput
+                                                      filename: "file.txt", server: .test,client: serverMock).asOutput
         
         #expect(value2)
-  
+        let server = MockFileServer(for: HeavyFileUploadePath.self, always: true)
         let value3 = try await HeavyFileUploadePath.upload(fileUrl: .mock,
                                                                parameters: [],
-                                                               queryItems: [],
-                                                           config: HeavyFileUploadePath.mockConfig(always: true)).asOutput
+                                                           queryItems: [],
+                                                           server: .test,
+                                                           client: server).asOutput
         #expect(value3)
         
         

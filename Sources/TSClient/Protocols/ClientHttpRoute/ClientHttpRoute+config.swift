@@ -14,14 +14,12 @@ public extension ClientHttpRoute where OutputData : Sendable {
     ///A config that contains a mock server, which will always returns a constant value
     ///
     ///This config can be used for testing your application without connecting to real server
-    static func mockConfig(always value : OutputData) -> RequestConfig<MockUpServer<OutputData>> {
-        let server = MockUpServer(for: Self.self, always: value)
-        return RequestConfig(server: .local, client: server)
+    static func mockClient(always value : OutputData) -> MockUpServer<OutputData> {
+      MockUpServer(for: Self.self, always: value)
     }
     
     ///Mock config that will always throw with your provided error
-    static func mockConfig(throws value : Self.Failure) -> RequestConfig<MockUpServer<Self.Failure>> {
-        let server = MockUpServer(for: Self.self, throws: value)
-        return RequestConfig(server: .local, client: server)
+    static func mockClient(throws value : Self.Failure) -> MockUpServer<Self.Failure>{
+        MockUpServer(for: Self.self, throws: value)
     }
 }

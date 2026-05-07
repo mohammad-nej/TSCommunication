@@ -22,7 +22,7 @@ import TSShared
 /// try await UserMovieUploadRoute.writeFileToDisk(from: req, path : filepath )
 ///}
 ///```
-public protocol ServerLargeFileUploadable :  FileUploadable, AnyHttpRoute where InputData : Content , OutputData:Content , ClosureResponse == OutputData {}
+public protocol ServerLargeFileUploadable :  LargeFileUploadable, AnyHttpRoute where  OutputData:Content , ClosureResponse == OutputData {}
 
 
 

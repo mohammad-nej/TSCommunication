@@ -14,18 +14,28 @@ import Foundation
 ///```swift
 ///
 /// try await MyBiGFileRoute
-///     .upload(fileUrl:url,config:.myconfig)
+///     .upload(fileUrl:url,server:.myServer)
 ///```
 public protocol ClientLargeFileUploadable :  LargeFileUploadable, EncoderDecoder{
     associatedtype Coding : EncoderDecoder = DefaultCoding
-    static func upload<T:UploadHttpClient>(fileUrl: URL, parameters : [String],
-                                           queryItems : [String:String] ,
-                                           config: RequestConfig<T>
+    static func upload(fileUrl: URL,
+                       parameters : [String],
+                       queryItems : [String:String] ,
+                       server: ServerConfiguration,
+                       client: any UploadHttpClient,
+                       config : Configuration,
+                       modify : RequestModifier
     ) async throws -> ServerResponse<Self>
     
-    static func upload<T:UploadHttpClient>(fileUrl: URL, parameters : [String],
-                                           queryItems : [URLQueryItem] ,
-                                           config: RequestConfig<T>
+    static func upload(
+        fileUrl: URL,
+        parameters : [String],
+        queryItems : [URLQueryItem] ,
+        server: ServerConfiguration,
+        client: any UploadHttpClient,
+        config : Configuration,
+        modify : RequestModifier
+                       
     ) async throws -> ServerResponse<Self>
     
     

@@ -11,9 +11,16 @@ import TSShared
 public extension ClientWebSocketRoute {
     
     ///Creates a web socket to your server
-    static func session<T:WebSocketClient>(with client : T = URLSession.shared,to server : ServerConfiguration, protocols : [String]) throws -> T.Session{
+    static func session(with client : any WebSocketClient ,to server : ServerConfiguration, protocols : [String]) throws -> any WebSocketSession{
         let url = try Self.path.webSocketURL(server: server)
         return client.webSocketTask(with: url, protocols: protocols)
     }
     
+}
+
+public extension ClientWebSocketRoute {
+    static func session(with client : URLSession = .shared , to server: ServerConfiguration , protocols : [String]) throws -> URLSessionWebSocketTask{
+        let url = try Self.path.webSocketURL(server: server)
+        return client.webSocketTask(with: url, protocols: protocols)
+    }
 }

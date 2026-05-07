@@ -7,8 +7,20 @@
 
 
 import Foundation
+import TSShared
 
 ///a client that can only handle GET requests
-public protocol GETHttpClient : _HttpClientable {
+public protocol GETHttpClient  {
     func data(for : URLRequest,delegate: (any URLSessionTaskDelegate)?) async throws -> (Data,URLResponse)
 }
+
+
+public extension GETHttpClient where Self == URLSession {
+    ///URLSession.shared instance
+    static var shared : URLSession {
+        URLSession.shared
+    }
+   
+}
+
+

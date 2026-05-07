@@ -17,21 +17,27 @@ public extension ClientSmallFileUploadable{
     ///     - metaData: json that will be send with this file
     ///     - data: the actual data that is being sent
     ///     - filename: name of the file (with extension) that is going to be inject in request
-    ///     - parameters: parameters for your request path
-    ///     - queryItems: query items for your request
-    ///     - config: RequestConf object for this request
-    static func upload<T:UpHttpClient>(metaData : InputData? ,
-                                       data : Data,
-                                       filename : FileName,
-                                       parameters : [String] = [],
-                                       
-                                       queryItems : [URLQueryItem] = [],
-                                       config : RequestConfig<T>
+    ///     - parameters: if your server route has a parameter, you should pass them in here
+    ///     - queryItems: query items in your request
+    ///     - server: server information for this request
+    ///     - client: client used to send this request
+    ///     - config: configuration for this request
+    ///     - modify: lets you modify the request object directly
+    static func upload(metaData : InputData? ,
+    data : Data,
+    filename : FileName,
+    parameters : [String] = [],
+    
+    queryItems : [URLQueryItem] = [],
+    server: ServerConfiguration,
+    client: any UpHttpClient = .shared,
+    config : Configuration = .default,
+    modify : RequestModifier = { _ in }
     ) async throws -> ServerResponse<Self>{
         
         guard !data.isEmpty else { throw DataError.emptyData }
         
-        let url = try Self.path.createURL(parameters: parameters, queryItems: queryItems, server: config.server, mode: config.urlSafetyCheckMode)
+        let url = try Self.path.createURL(parameters: parameters, queryItems: queryItems, server: server, mode: config.urlCheckMode)
         
         //checking the size of data
         if data.count > 25 * 1024 * 1024 { //25mb
@@ -49,7 +55,7 @@ public extension ClientSmallFileUploadable{
         var body = Data()
         
         let dtoData = try encoder.encode(metaData)
-     
+        
         
         //dto
         body.append("--\(boundary)\r\n".data(using: .utf8)!)
@@ -72,20 +78,35 @@ public extension ClientSmallFileUploadable{
         //end of body
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         
+        try modify(&request)
         //sending the file
-        let (data, response) = try await config.httpClient.upload(for: request, from: body,delegate: config.delegate)
+        let (data, response) = try await client.upload(for: request, from: body,delegate: config.delegate)
         
         return .init(Self.self, data: data, response: response)
         
     }
     
-    @_disfavoredOverload
+    
     ///Used for sending a file to server using a multipart request
-    static func upload<T:UpHttpClient>(metaData : InputData? ,
-                                       data : Data,filename : FileName,
-                                       parameters : [String] = [],
-                                       queryItems : [String : String] = [:],
-                                       config : RequestConfig<T>
+    ///   - Parameters:
+    ///     - metaData: json that will be send with this file
+    ///     - data: the actual data that is being sent
+    ///     - filename: name of the file (with extension) that is going to be inject in request
+    ///     - parameters: if your server route has a parameter, you should pass them in here
+    ///     - queryItems: query items in your request
+    ///     - server: server information for this request
+    ///     - client: client used to send this request
+    ///     - config: configuration for this request
+    ///     - modify: lets you modify the request object directly
+    @_disfavoredOverload
+    static func upload(metaData : InputData? ,
+                       data : Data,filename : FileName,
+                       parameters : [String] = [],
+                       queryItems : [String : String] = [:],
+                       server: ServerConfiguration,
+                       client: any UpHttpClient = .shared,
+                       config : Configuration = .default,
+                       modify : RequestModifier = { _ in }
     ) async throws -> ServerResponse<Self> {
         
         let items = queryItems.toQueryItem
@@ -94,7 +115,10 @@ public extension ClientSmallFileUploadable{
             data: data, filename: filename,
             parameters: parameters,
             queryItems: items,
-            config: config
+            server: server,
+            client: client,
+            config: config,
+            modify: modify
         )
         
     }

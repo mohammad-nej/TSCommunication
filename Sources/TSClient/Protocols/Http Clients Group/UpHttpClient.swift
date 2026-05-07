@@ -11,7 +11,13 @@ import Foundation
 ///A client that can upload data to server
 ///
 ///This is mainly used for testing your application
-public protocol UpHttpClient : _HttpClientable{
+public protocol UpHttpClient {
     func upload(for : URLRequest , from : Data,delegate: (any URLSessionTaskDelegate)?) async throws -> (Data,URLResponse)
  
+}
+
+
+public extension UpHttpClient where Self == URLSession {
+    ///URLSession.shared instance
+    static var shared : URLSession { .shared }
 }

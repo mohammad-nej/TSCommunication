@@ -54,13 +54,15 @@ struct RequestSender {
         let fileData = "Test".data(using: .utf8)!
         let downloadResponse = try await FileDownloadableTest.download(
             parameters: [],
-            config: FileDownloadableTest.mockConfig(always: fileData))
+            server:.test,
+            client: FileDownloadableTest.mockClient(always: fileData))
         
         let download = try downloadResponse.asOutput
         let downloadEnum = try downloadResponse.asResult
         let downloadErrorResponse = try await FileDownloadableTest.download(
             parameters: [],
-            config: FileDownloadableTest.mockConfig(throws: error))
+            server:.test,
+            client: FileDownloadableTest.mockClient(throws: error))
         let downloadEnumError = try downloadErrorResponse.asResult
         let downloadError = try downloadErrorResponse.asServerError
         
@@ -73,47 +75,54 @@ struct RequestSender {
             metaData: "test",
             data: "test".data(using: .utf8)!,
             filename: "test.txt",
-            config: UploadSmallFileTest.mockConfig(always: true)
+            server: .test,
+            client: UploadSmallFileTest.mockClient(always: true)
         ).asOutput
         let uploadError = try await UploadSmallFileTest.upload(
             metaData: "test",
             data: "test".data(using: .utf8)!,
             filename: "test.txt",
-            config: UploadSmallFileTest.mockConfig(throws: error)
+            server:.test,
+            client: UploadSmallFileTest.mockClient(throws: error)
         ).asServerError
         #expect(uploadData)
         #expect(uploadError == error)
         
-        
+        let server = MockFileServer(for: UploadBigFileTest.self, always: true)
         let bigUpload = try await UploadBigFileTest.upload(
             fileUrl: .mock,
-            config: UploadBigFileTest.mockConfig(always: true))
+            server: .test,
+            client:server)
             .asOutput
+        
+        
         let bigUploadError = try await UploadBigFileTest.upload(
             fileUrl: .mock,
-            config: UploadBigFileTest.mockConfig(throws: error)
+            server: .test, client: UploadBigFileTest.mockClient(throws: error)
         ).asServerError
         #expect(bigUpload)
         #expect(bigUploadError == error)
         
         let get = try await SampleGetRoute.get(
             parameters: [],
-            config: SampleGetRoute.mockConfig(
+            server:.test,
+            client: SampleGetRoute.mockClient(
                 always: true
             )
         ).asOutput
         let getError = try await SampleGetRoute.get(
             parameters: [],
-            config: SampleGetRoute.mockConfig(throws: error)
+            server: .test,
+            client: SampleGetRoute.mockClient(throws: error)
         ).asServerError
         #expect(get)
         #expect(getError == error)
         
         let general = try await GeneralRouteTest
-            .send("test", config: GeneralRouteTest.mockConfig(always: true))
+            .send("test", server:.test ,client: GeneralRouteTest.mockClient(always: true))
             .asOutput
         let generalError = try await GeneralRouteTest
-            .send("test", config: GeneralRouteTest.mockConfig(throws: error))
+            .send("test", server: .test ,client: GeneralRouteTest.mockClient(throws: error))
             .asServerError
         
         #expect(generalError == error)

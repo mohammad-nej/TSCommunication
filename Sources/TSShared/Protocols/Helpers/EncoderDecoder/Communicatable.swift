@@ -7,5 +7,5 @@
 import Foundation
 
 ///Anything that can be passed around
-typealias Communicatable = Sendable & Equatable & Codable
+public typealias Communicatable = Sendable & Equatable & Codable
 
