@@ -14,24 +14,24 @@ import TSClient
 
 
 
-struct UploadBigFileTest : ClientLargeFileUploadable {
+enum UploadBigFileTest : ClientLargeFileUploadable {
     typealias OutputData = Bool
     static var path: TSShared.ServerPath { "uploadBigFile"}
 }
 
-struct FileDownloadableTest : ClientFileDownloadable {
+enum FileDownloadableTest : ClientFileDownloadable {
     typealias OutputData = Data
     static var path: TSShared.ServerPath { "downloadFile" }
 }
 
 
-struct UploadSmallFileTest : ClientSmallFileUploadable {
+enum UploadSmallFileTest : ClientSmallFileUploadable {
     typealias InputData = String
     typealias OutputData = Bool
     static var path: TSShared.ServerPath { "uploadSmallFile" }
 }
 
-struct GeneralRouteTest : ClientHttpRoute {
+enum GeneralRouteTest : ClientHttpRoute {
     typealias InputData = String
     typealias OutputData = Bool
     static var path: TSShared.ServerPath { "testGeneral"}
@@ -39,7 +39,7 @@ struct GeneralRouteTest : ClientHttpRoute {
 }
 
 
-struct WebSocketTest : ClientWebSocketRoute {
+enum WebSocketTest : ClientWebSocketRoute {
     static var path: TSShared.ServerPath { "webSocket"}
 }
 

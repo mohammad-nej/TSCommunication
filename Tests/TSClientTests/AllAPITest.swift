@@ -12,12 +12,7 @@ import TSClient
 import Foundation
 
 
-
-
-
-
-
-struct SampleGetRoute : ClientGetRouteProtocol {
+enum SampleGetRoute : ClientGetRouteProtocol {
     
     
     
@@ -29,7 +24,7 @@ struct SampleGetRoute : ClientGetRouteProtocol {
     
 }
 
-struct FileUploadePath : ClientSmallFileUploadable {
+enum FileUploadePath : ClientSmallFileUploadable {
     
     typealias InputData = String
     
@@ -39,7 +34,7 @@ struct FileUploadePath : ClientSmallFileUploadable {
     
 }
 
-struct HeavyFileUploadePath : ClientLargeFileUploadable {
+enum HeavyFileUploadePath : ClientLargeFileUploadable {
     
     typealias OutputData = Bool
     

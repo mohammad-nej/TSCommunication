@@ -18,7 +18,7 @@ extension UUID : @retroactive Content {}
 
 extension RoutesTests {
     ///Greeting Route
-    struct EchoRoute : ServerRouteProtocol {
+    enum EchoRoute : ServerRouteProtocol {
                 
         static var closure: @Sendable (Vapor.Request) async throws -> String {
             return { req in
@@ -37,7 +37,7 @@ extension RoutesTests {
     }
     
     ///Get Id route
-    struct GetId : ServerGetRouteProtocol {
+    enum GetId : ServerGetRouteProtocol {
         
         
         static var closure: @Sendable (Vapor.Request) async throws -> UUID {
@@ -56,7 +56,7 @@ extension RoutesTests {
     }
     
     ///Route for downloading a file from server
-    struct DownloadFile : ServerFileDownloadable{
+    enum DownloadFile : ServerFileDownloadable{
        
         static var closure: @Sendable (Vapor.Request) async throws -> Vapor.Response{
             return { req in
@@ -77,7 +77,7 @@ extension RoutesTests {
         static let path: TSShared.ServerPath = "download/:text"
         
     }
-    struct UploadFile : ServerFileUploadable{
+    enum UploadFile : ServerFileUploadable{
         
         typealias InputData = String
         

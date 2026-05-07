@@ -18,7 +18,7 @@ import TSShared
 
 
 
-struct OneMiddleWare : ServerLargeFileUploadable {
+enum OneMiddleWare : ServerLargeFileUploadable {
     static var closure: @Sendable (Vapor.Request) async throws -> Bool{
         
         return { req in

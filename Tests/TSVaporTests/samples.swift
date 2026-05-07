@@ -12,7 +12,7 @@ import Vapor
 
 
 
-struct SecondTest : ServerFileUploadable {
+enum SecondTest : ServerFileUploadable {
    static var closure: @Sendable (Vapor.Request) async throws -> Bool {
        return { request in
            return true
@@ -30,7 +30,7 @@ struct SecondTest : ServerFileUploadable {
 }
 
 
-struct ThirdTest : ServerGetRouteProtocol {
+enum ThirdTest : ServerGetRouteProtocol {
   static var closure: @Sendable (Vapor.Request) async throws -> Bool {
       return { request in
           return true
@@ -42,7 +42,7 @@ struct ThirdTest : ServerGetRouteProtocol {
   static let path: ServerPath = "testPath3"
 }
 
-struct ThirdTestSimillar : ServerGetRouteProtocol {
+enum ThirdTestSimillar : ServerGetRouteProtocol {
    static var closure: @Sendable (Vapor.Request) async throws -> Bool {
        return { request in
            return true
@@ -55,7 +55,7 @@ struct ThirdTestSimillar : ServerGetRouteProtocol {
 
 }
 
-struct BehindBothMiddlewares : ServerFileUploadable {
+enum BehindBothMiddlewares : ServerFileUploadable {
    static var closure: @Sendable (Vapor.Request) async throws -> Bool {
        return { request in
            let values = request.headers["Test-Header"]

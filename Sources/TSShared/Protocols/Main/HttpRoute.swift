@@ -7,7 +7,7 @@ import Foundation
 ///
 /// A route can be created by conforming to this type:
 /// ```swift
-///struct EchoRoute : HttpRoute {
+///enum EchoRoute : HttpRoute {
 ///    typealias InputData = String
 ///    typealias OutputData = String
 ///

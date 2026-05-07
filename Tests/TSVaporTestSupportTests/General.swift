@@ -16,7 +16,7 @@ import VaporTesting
 @Suite("General tests")
 struct GeneralTests {
     
-    struct UploadFile : ServerFileUploadable{
+    enum UploadFile : ServerFileUploadable{
         
         typealias InputData = String
         
@@ -82,13 +82,13 @@ struct GeneralTests {
 }
 
 
-struct EchoRoute : GetHttpRoute {
+enum EchoRoute : GetHttpRoute {
     typealias OutputData = Bool
     
     static var path: TSShared.ServerPath  { "echo"}
 }
 
-struct DwonloadRoute : FileDownloadable {
+enum DwonloadRoute : FileDownloadable {
     typealias OutputData = Data
     
     static var path: TSShared.ServerPath { "download" }

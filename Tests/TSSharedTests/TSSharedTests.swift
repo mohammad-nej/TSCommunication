@@ -2,7 +2,7 @@ import Testing
 import TSShared
 import Foundation
 
-struct MySampleRoute : HttpRoute {
+enum MySampleRoute : HttpRoute {
     typealias InputData = String
     
     typealias OutputData = String
@@ -15,13 +15,13 @@ struct MySampleRoute : HttpRoute {
     static let contentType: ContentType = .binary
     
 }
-struct MyWebSocketRoute : WebSocketRoute {
+enum MyWebSocketRoute : WebSocketRoute {
     static var path: TSShared.ServerPath { "webSocket" }
 }
-struct DownloadMovie : FileDownloadable {
+enum DownloadMovie : FileDownloadable {
     static var path: TSShared.ServerPath { "downloadFile/:id" }
 }
-struct SampleFileUploadable : FileUploadable {
+enum SampleFileUploadable : FileUploadable {
     typealias InputData = String
     
     typealias OutputData = Data

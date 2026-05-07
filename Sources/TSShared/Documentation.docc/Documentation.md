@@ -32,7 +32,7 @@ This packages has 6 main protocols, each route should conform to one of them dep
         conforming to this protocol is easy:
 
         ```swift
-        struct MySampleRoute : HttpRoute {
+        enum MySampleRoute : HttpRoute {
             typealias InputData = String
             
             typealias OutputData = String
@@ -45,14 +45,13 @@ This packages has 6 main protocols, each route should conform to one of them dep
             
         }
         ```
-        note that everything is defined as *static* and this is intentional cause neither instantiating nor altering a route doesn't mean anything.
-
+        - Note: It's a good idea to declare all your routes as Enum, cause neither instantiating, nor altering a route doesn't mean anything.
     }
     
     @Tab("GetHttpRoute"){
         This is just like ``HttpRoute``, but it doesn't have `InputData` cause a GET request doesn't send anything to server
         ```swift
-        struct MySampleRoute : GetHttpRoute {
+        enum MySampleRoute : GetHttpRoute {
             
             typealias OutputData = String
             
@@ -66,7 +65,7 @@ This packages has 6 main protocols, each route should conform to one of them dep
     @Tab("FileUploadable"){
         This should be used for routes that expect user to upload a small file to server. This protocol use MultiPart to send your file in a single request alongs side with a json payload. This should only be used file you are sending small. For larger files conform to ``LargeFileUploadable`` instead.        
         ```swift
-        struct SampleFileUploadable : FileUploadable {
+        enum SampleFileUploadable : FileUploadable {
             typealias InputData = String
             
             typealias OutputData = String
@@ -82,7 +81,7 @@ This packages has 6 main protocols, each route should conform to one of them dep
         If you want to upload a large file to server, this should be your go to option. This route will let you stream your file from client to server. 
         This route doesn't have an InputData cause it will stream a file directly from URL to server.
         ```swift
-        struct SampleLargeFile : LargeFileUploadable {
+        enum SampleLargeFile : LargeFileUploadable {
             typealias OutputData = UUID
             static var path: TSShared.ServerPath { "some/large/path"}
         }
@@ -92,7 +91,7 @@ This packages has 6 main protocols, each route should conform to one of them dep
     @Tab("FileDownloadable"){
         If you route is going to let client download a file from server, you should conform to this protocol. 
         ```swift
-        struct DownloadMovie : FileDownloadable {
+        enum DownloadMovie : FileDownloadable {
             static var path: TSShared.ServerPath { "downloadFile/:id" }
         }
 
@@ -102,7 +101,7 @@ This packages has 6 main protocols, each route should conform to one of them dep
     @Tab("WebSocketRoute"){
         If you want to open a WebSocket to your route, you have to conform to this protocol.
         ```swift
-        struct MyWebSocketRoute : WebSocketRoute {
+        enum MyWebSocketRoute : WebSocketRoute {
             static var path: TSShared.ServerPath { "webSocket" }
         }
         ```
@@ -161,7 +160,7 @@ All main HTTP protocols conform to ``Failable`` protocol. this protocol lets us 
 By default, ``VaporError`` is set to be the default error type for ``Failable`` and ``DefaultConfig``
 If you want to use a different type for your error on your route :
 ```swift
-public struct MyRoute: GetHttpRoute{
+public enum MyRoute: GetHttpRoute{
     Failure = MyServerError
     FailureCoder = SnakeCaseCoding
 }
