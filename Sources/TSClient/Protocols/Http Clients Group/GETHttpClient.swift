@@ -10,7 +10,7 @@ import Foundation
 import TSShared
 
 ///a client that can only handle GET requests
-public protocol GETHttpClient  {
+public protocol GETHttpClient : Sendable  {
     func data(for : URLRequest,delegate: (any URLSessionTaskDelegate)?) async throws -> (Data,URLResponse)
 }
 

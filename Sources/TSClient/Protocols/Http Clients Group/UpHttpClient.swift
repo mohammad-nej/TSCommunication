@@ -11,7 +11,7 @@ import Foundation
 ///A client that can upload data to server
 ///
 ///This is mainly used for testing your application
-public protocol UpHttpClient {
+public protocol UpHttpClient : Sendable {
     func upload(for : URLRequest , from : Data,delegate: (any URLSessionTaskDelegate)?) async throws -> (Data,URLResponse)
  
 }
