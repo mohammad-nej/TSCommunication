@@ -4,6 +4,22 @@ This package is all about making communication between Client/Server **Type Safe
 The main idea is to create a single type per each route in your server. This types are created in a Shared package that both server/client have access to, on those type you have to enter the base requirements for your routes, including path, http method, ... .
 
 
+# Pros and Cons
+Using `TSCommunication`  has it's own pros and cons:
+## Pros:
+- Make your routes Input/Output type-safe
+### Client side:
+- Checks your parameters count before sending a request
+- Checks your routes correctness
+- Makes sending a request to server easier
+- Makes decoding server response easier
+- Provides Mocks for testing your client app 
+### Server side 
+- Provides DSL for inserting your routes to server
+- Deduplicates your routes before inserting them to server
+- Makes testing your routes easier
+-  
+
 # TSSHared
  ``TSSHared`` package provides 6 different protocols for creating a route. for example:
  ```swift
@@ -25,7 +41,7 @@ extension AddContactsRoute : ClientHttpRoute {} //Thats it !
 ```
 each Client side protocol provides appropriate methods for the job. 
 ```swift
-let output = try await AddContactsRoute.send(contactDtO, config : .server ).asOutput
+let output = try await AddContactsRoute.send(contactDtO, server : .server ).asOutput
 ```
 This line will your send a ContactDTO to server, get back the response and convert to OutputData( in this case Bool).
 # TSVapor
