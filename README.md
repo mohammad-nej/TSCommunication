@@ -3,9 +3,11 @@ This package is all about making communication between Client/Server **Type Safe
 
 The main idea is to create a single type per each route in your server. This types are created in a Shared package that both server/client have access to, on those type you have to enter the base requirements for your routes, including path, http method, ... .
 
-
+Because targets in this package work independent of each other (except `TSShared`), You can use this package even if your server is not written using Swift.
 
 ## Pros:
+Using this package has it's pros and cons
+### In General
 - Make your routes Input/Output type-safe
 - Fully customizable thanks to POP design
 ### Client side:
@@ -83,5 +85,7 @@ func testAdd(){
 ```
 # Conclusion
 This was just an overview of what can be done with this package, This package provides many customizations like custom JSONDecoder/JSONEncoder for your routes, custom Failure type for errors emitted to client, adding middleware and much more, make sure to check the documentations for more information.
+
+Currently, Only Vapor is supported on the server-side, support for Hummingbird will be added later on.
 
 Feel free to contact me at : `mohammad.nej@gmail.com`.
