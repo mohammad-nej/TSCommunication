@@ -59,20 +59,26 @@ public extension ServerPath {
                 parameterIndex = parameters.count
                 break
             } else {
-                //in case of extra parameters
+                //in case of insufficient amount of parameters
                 guard parameterIndex < parameters.count else {
-                    logger.warning("Extra amount of parameters in path : \(self.description)")
+                    logger.warning("Insufficient amount of parameters in path : \(self.description)")
+                    urlPath.append(part.value)
+                    parameterIndex += 1
                     continue
                 }
+        
                 urlPath.append(parameters[parameterIndex])
                 parameterIndex += 1
             }
         }
         
-        
-        if parameterIndex != parameters.count {
-            logger.warning("Insufficient amount of parameters in path : \(self.description), Expected : \(parameters.count) , received : \(parameterIndex.description)")
+        //in case of extra parameters
+        if parameters.count > parameterIndex {
+            logger.warning("Extra amount of parameters in path : \(self.description), Expected : \(parameters.count) , received : \(parameterIndex.description)")
+            urlPath.append(contentsOf: parameters[parameterIndex...])
         }
+        
+        
         
         return urlPath.joined(separator: "/")
     }

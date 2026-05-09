@@ -15,6 +15,9 @@ public extension ServerFileUploadable {
     //Default is set to post , you can override it by defining a value in your concrete type
     static var method: HttpMethod { .POST }
     
+    ///Max size of the file that vapor will collect
+    ///
+    ///Default value is 25mb
     static var transferMethod: FileTransferMethod { .collect(.mb(25)) }
     
 }

@@ -18,7 +18,7 @@ extension UUID : @retroactive Content {}
 
 extension RoutesTests {
     ///Greeting Route
-    enum EchoRoute : ServerRouteProtocol {
+    enum EchoRoute : ServerHttpRoute {
                 
         static var closure: @Sendable (Vapor.Request) async throws -> String {
             return { req in

@@ -21,7 +21,7 @@ public extension GetHttpRoute {
     }
 }
 
-//Since all routes conform to AnyHttpRoute , this extension will be available to all routes
+//Since all HTTP routes conform to AnyHttpRoute , this extension will be available to all HTTP routes
 public extension AnyHttpRoute  {
     
     ///Convenient function for testing your app

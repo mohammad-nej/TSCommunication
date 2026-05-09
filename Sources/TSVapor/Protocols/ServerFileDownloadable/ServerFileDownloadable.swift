@@ -1,5 +1,5 @@
 //
-//  DownloadableServerRouteProtocol.swift
+//  DownloadableServerHttpRoute.swift
 //  Whisper
 //
 //  Created by MohammavDev on 4/9/26.
@@ -27,6 +27,8 @@ extension ServerFileDownloadable{
     public static var method: HttpMethod{ .GET }
 
     ///Streams a file to the client
+    ///
+    ///This function will add a  "Content-Type" : "application/octet-stream" to headers of the request
     public static func send(file path : URL, request : Request) async throws -> Response{
         let response = try await request.fileio.asyncStreamFile(at: path.path())
         response.headers.add(name: .contentType, value: "application/octet-stream")

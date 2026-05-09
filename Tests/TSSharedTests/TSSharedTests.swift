@@ -77,6 +77,45 @@ func testPathPart() throws {
     
 }
 
+@Test("URLCreationMode test")
+func testURLCreationMode() throws{
+    
+    let path = try ServerPath(string: "user/:id/name/:some")
+    
+    let value = try path.urlValidPath(with: ["first"], mode: .unchecked)
+    #expect(value == "user/first/name/:some")
+    
+    let value2 = try path.urlValidPath(with: ["first", "second","third"], mode: .unchecked)
+    #expect(value2 == "user/first/name/second/third")
+    
+    
+    let path2 = try ServerPath(string: "user/:name/**")
+    
+    let value3 = try path2.urlValidPath(with: ["one","two","three","four"], mode: .checked)
+    #expect(value3 == "user/one/two/three/four")
+    
+    let value4 = try path2.urlValidPath(with: ["one","two","three","four"], mode: .unchecked)
+    #expect("user/one/two/three/four" == value4)
+}
+
+@Test("test CommonHeader tests")
+func testCommonHeader() throws {
+    
+    var request = URLRequest(url: .moviesDirectory)
+    
+    request["foo"] = "bar"
+    
+    let fetched = try #require(request.value(forHTTPHeaderField: "foo"))
+    #expect(fetched == "bar")
+    
+    let dic = [ "MyValue" : "hello"]
+    let response = HTTPURLResponse(url: .moviesDirectory, statusCode: 200, httpVersion: nil, headerFields: dic)!
+    
+    
+    #expect(response["MyValue"] == "hello")
+    
+}
+
 @Test("ServerPath test")
 func serverPathTests() throws {
     

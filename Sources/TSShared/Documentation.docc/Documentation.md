@@ -1,11 +1,11 @@
 # ``TSShared``
 
-Contains your routes being shared between Client and Server
+Contains protocols to define your routes
 
 ## Overview
 
 This target contains protocols that lets you define your routes. By defining  your routes in here, both
-server and client app can have access to them in a type- safe manner.
+server and client app can have access to them in a type-safe manner.
 
 ## Details
 
@@ -71,8 +71,6 @@ This packages has 6 main protocols, each route should conform to one of them dep
             typealias OutputData = String
             
             static var path: TSShared.ServerPath { "user" }
-            
-            
         }
         ```
     }
@@ -158,7 +156,7 @@ All protocols in this package also supports handling errors emitted by server.
 All main HTTP protocols conform to ``Failable`` protocol. this protocol lets us define a type conforming to ``ServerError`` for your route(s) and also provide a `JSONDecoder`/`JSONEncoder` for decoding/encoding errors.
 
 By default, ``VaporError`` is set to be the default error type for ``Failable`` and ``DefaultConfig``
-If you want to use a different type for your error on your route :
+for encoding/decoding, If you want to use a different type for your error on your route :
 ```swift
 public enum MyRoute: GetHttpRoute{
     Failure = MyServerError
@@ -167,8 +165,23 @@ public enum MyRoute: GetHttpRoute{
 ```
 This protocol also introduces an ``EncoderDecoder`` type for encoding/decoding errors, which can be overridden by setting ``Failable/failureEncoder`` and ``Failable/failureDecoder`` on your chosen type.
 ## ServerPath: 
-As you might have noticed a type called ``ServerPath`` is used to receive the path of your route, make sure to check it'd documentation for more info
+As you might have noticed a type called ``ServerPath`` is used to receive the path of your route, make sure to check it'd documentation for more information.
+## CommonHeader
+This type can be used along side ``CommonHeaderItem`` to fetch/insert headers from ``URLRequest`` and ``URLResponse``. 
 
+Most commonly used headers are already implemented as static variables:
+```swift
+var request = URLRequest(..)
+request[.userAgent] = "MyApp/1.2 iOS/18"
+
+//since CommonHeader conforms to ExpressibleByStringLiteral
+request["My custom header"] = "something"
+
+//Getting a header from response
+if let value = response[.userAgent]{ //response : URLResponse 
+    //...
+}
+```
 ## Topics
 
 

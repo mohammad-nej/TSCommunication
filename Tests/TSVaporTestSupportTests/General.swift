@@ -13,6 +13,7 @@ import Vapor
 import VaporTesting
 
 
+
 @Suite("General tests")
 struct GeneralTests {
     
@@ -37,6 +38,19 @@ struct GeneralTests {
     }
     
     
+    
+    
+    @Test("Test inserting/fetching http headers")
+    func testHeaders() throws {
+        
+        var headers = HTTPHeaders()
+        headers.append(.accept("something"))
+        #expect(headers["Accept"].first == "something")
+        #expect(headers["Accept"].count == 1)
+        
+        let value = headers.get(.accept).first
+        #expect(value == "something")
+    }
     
     @Test("Test modifing the request for uploadable routes")
     func testModifiing() throws{

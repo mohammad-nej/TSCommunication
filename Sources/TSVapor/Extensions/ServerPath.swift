@@ -41,13 +41,7 @@ public extension Array where Element == PathComponent {
 }
 
 extension PathComponent {
-    
-//    
-//    func toServerPath() -> ServerPath {
-//       //since we are converting from Vapor path components , it's impossible to fail
-//        try! ServerPath(string: self.description)
-//    }
-//    
+ 
     var isParameter : Bool {
         if self == .anything {
             return true

@@ -23,11 +23,11 @@ Just like the client side, this package also introduce 6 main protocols.
         }
         ```
     }
-    @Tab("ServerRouteProtocol"){
+    @Tab("ServerHttpRoute"){
 
         extend your ``TSShared/HttpRoute``s to this protocol.
         ```swift
-        extension AddContactsRoute : ServerRouteProtocol{
+        extension AddContactsRoute : ServerHttpRoute{
             static var closure: @Sendable (Vapor.Request) async throws -> PingRoute.OutputData{
                 return { req in 
                     //do your stuff in here
@@ -44,13 +44,11 @@ Just like the client side, this package also introduce 6 main protocols.
         
         - Note: in this case the output type of the closure is not your route `OutputData` but **Vapor.Response** instead. This is because vapor needs you to send the `Response` object back when streaming a file to client
         ```swift
-        extension MyFileUploadRoute : ServerFileDownloadable{
+        extension MyDownloadRoute : ServerFileDownloadable{
             static var closure: @Sendable (Vapor.Request) async throws -> Vapor.Response{
                 return { req in
                     //do your stuff in here
-                    let response = try await MyDownloadRoute
-                                        .send(file: fileURL,
-                                        request: req)
+                    let response = try await Self.send(file: fileURL,request: req)
                     return response
                 }
             }

@@ -54,8 +54,14 @@ extension ServerConfiguration{
     }   
 }
 ```
-- Note:
-All helpers functions use `URLCreationMode.checked` by default, which means that your parameters count is checked before sending a request, you will get an error if you pass in incorrect amount of parameters.
+## Configuration
+All helper functions provided with this target has a `config` parameter which takes an instance of ``Configuration`` as input. This type has 2 properties:
+- urlCheckMode:
+By default, when creating a request, amount of parameters that you send in a request is checked to match the amount of parameters needed by the server. 
+
+You can turn off this behavior by setting ``Configuration/urlCheckMode`` to `.unchecked`
+- delegate:
+This is an instance of `URLSessionTaskDelegate`, which can be use to pass in a delegate to your `URLSession`, default value is `nil`
 
 ## ServerResponse
 All helper functions in this package return a ``ServerResponse`` upon completion. This type is just a wrapper around standard `(Data,URLSession)` which is returned from URLSession functions.
@@ -74,7 +80,7 @@ Mocking is crucial for testing your client app. You can mock your server using `
 
 Five different mock servers ``MockHttpServer``, ``MockDownloadServer`` ,``MockGetServer``, ``MockUpServer``, ``MockFileServer`` are already provided in this target. You can easily create a mock config for your route:
 ```swift
-//Creats a mock server that always returns hello
+//Create a mock server that always returns hello
 let mockClient = MockGetServer(MyGetRoute.self){ request in
     return ("Received",URLSession())
 }
@@ -112,6 +118,7 @@ let offlineServer = MockHttpServer{data , req in
 //Then in your app you can check
 MyRoute.get(config: isOnline ? realServer : offlineServer.config)
 ```
+
 ## Topics
 
 
