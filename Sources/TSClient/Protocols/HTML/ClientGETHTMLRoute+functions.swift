@@ -1,16 +1,19 @@
 //
-//  ClientGet+functions.swift
+//  ClientGETHTMLRoute+functions.swift
 //  TSCommunication
 //
-//  Created by MohammavDev on 4/26/26.
+//  Created by MohammavDev on 6/7/26.
 //
 
-import Foundation
-import TSShared
 
-@available(iOS 13.0.0, *)
-public extension ClientGetRouteProtocol{
-    ///Get some information from server
+
+import  TSShared
+import Foundation
+
+
+
+public extension ClientGetHTMLRoute {
+    ///Get  HTML  from server
     /// - Parameters:
     ///     - parameters: if your server route has a parameter, you should pass them in here
     ///     - queryItems: query items in your request
@@ -39,7 +42,7 @@ public extension ClientGetRouteProtocol{
     }
     
     
-    ///Get some information from server
+    ///Get HTML from server
     /// - Parameters:
     ///     - parameters: if your server route has a parameter, you should pass them in here
     ///     - queryItems: query items in your request
@@ -60,4 +63,5 @@ public extension ClientGetRouteProtocol{
         )
         
     }
+    
 }

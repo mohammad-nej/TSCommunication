@@ -31,6 +31,15 @@ enum SampleFileUploadable : FileUploadable {
     
 }
 
+
+enum SampleHTMLRoute : HTMLRoute {
+    typealias InputData = String
+    
+    static let path: TSShared.ServerPath = "user"
+    
+    
+}
+
 struct SampleLargeFile : LargeFileUploadable {
     
     typealias OutputData = UUID

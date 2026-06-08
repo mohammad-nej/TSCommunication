@@ -36,6 +36,36 @@ extension RoutesTests {
         
     }
     
+    
+    enum SampleGetHTMLRoute : ServerGetHTMLRoute {
+        static var closure: @Sendable (Vapor.Request) async throws -> TSShared.HTML {
+            return { _ in
+                    .sample("<p>Hello from get route</p>")
+            }
+        }
+        
+        static let path: TSShared.ServerPath = "hello"
+        
+        
+    }
+    
+    
+    enum SamplePostHTMLRoute : ServerHTMLRoute {
+        typealias InputData = String
+        
+        
+        static var closure: @Sendable (Vapor.Request) async throws -> TSShared.HTML {
+            return { req in
+                let input = try Self.decodeInput(in: req)
+                return .sample(input)
+            }
+        }
+        
+        static let path: TSShared.ServerPath = "postRoute"
+        
+        
+    }
+    
     ///Get Id route
     enum GetId : ServerGetRouteProtocol {
         

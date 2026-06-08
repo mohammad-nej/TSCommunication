@@ -15,6 +15,8 @@ import Vapor
 
 
 
+
+
 @Suite("Testing different routes to a server")
 struct RoutesTests{
         
@@ -40,6 +42,23 @@ struct RoutesTests{
                 let newId = try GetId.output(from: response)
                 #expect(newId == id)
             }
+        }
+    }
+    
+    @Test("HTML route tests")
+    func htmlRoutes() async throws {
+        try await SampleGetHTMLRoute.test(prepare:SampleGetHTMLRoute.insertToApp){ req in
+            
+        }afterResponse: { response in
+            let output = try SampleGetHTMLRoute.output(from: response)
+            #expect(output == .sample("<p>Hello from get route</p>"))
+        }
+        
+        try await SamplePostHTMLRoute.test(prepare: SamplePostHTMLRoute.insertToApp){ req in
+            try SamplePostHTMLRoute.insert("Sample value", in: &req)
+        }afterResponse: { response in
+            let output = try SamplePostHTMLRoute.output(from: response)
+            #expect(output == .sample("Sample value"))
         }
     }
     

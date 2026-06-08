@@ -7,7 +7,7 @@ import PackageDescription
 let package = Package(
     name: "TSCommunication",
     platforms: [
-        .macOS(.v13), .iOS(.v18)
+        .macOS(.v13), .iOS(.v18),
     ],
     
     products: [

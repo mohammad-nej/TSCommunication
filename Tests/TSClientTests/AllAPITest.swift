@@ -24,6 +24,22 @@ enum SampleGetRoute : ClientGetRouteProtocol {
     
 }
 
+
+enum SampleGetHTMLRoute : ClientGetHTMLRoute {
+ 
+    
+    static var path: TSShared.ServerPath  { "samplePath" }
+    
+    
+}
+
+enum SamplePOSTHTMLRoute : ClientHTMLRoute {
+    typealias InputData = String
+    
+    static let path: TSShared.ServerPath = "samplePath"
+    
+}
+
 enum FileUploadePath : ClientSmallFileUploadable {
     
     typealias InputData = String
@@ -127,5 +143,12 @@ struct RequestSender {
         
         #expect(generalError == error)
         #expect(general)
+    }
+    
+    @Test("sample get HTML request")
+    func htmlRequests() async throws {
+        let results = try await SampleGetHTMLRoute.get(parameters: [], server: .test,client: SampleGetHTMLRoute.mockClient(always: .sample( "a sample page"))).asOutput
+        
+        let result2 = try await SamplePOSTHTMLRoute.send("value", server: .test,client:SamplePOSTHTMLRoute.mockClient(always: .sample("sample page")))
     }
 }
