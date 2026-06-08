@@ -1,6 +1,9 @@
 import Testing
 import TSShared
 import Foundation
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 enum MySampleRoute : HttpRoute {
     typealias InputData = String

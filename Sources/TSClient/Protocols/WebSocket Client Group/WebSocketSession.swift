@@ -7,7 +7,9 @@
 
 
 import Foundation
-
+#if os(Linux)
+import FoundationNetworking
+#endif
 ///Contains main method of `Foundation/URLSessionWebSocketTask`
 ///
 ///This protocol is useful to mock `URLSessionWebSocketTask`

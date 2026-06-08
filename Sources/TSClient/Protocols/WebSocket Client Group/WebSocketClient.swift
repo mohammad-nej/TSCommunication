@@ -6,7 +6,9 @@
 //
 
 import Foundation
-
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 
 

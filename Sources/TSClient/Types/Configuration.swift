@@ -7,7 +7,9 @@
 
 import Foundation
 import TSShared
-
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 
 ///Holds all configurations of a request

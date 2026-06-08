@@ -8,6 +8,9 @@
 
 import Foundation
 import TSShared
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 ///a client that can only handle GET requests
 public protocol GETHttpClient : Sendable  {

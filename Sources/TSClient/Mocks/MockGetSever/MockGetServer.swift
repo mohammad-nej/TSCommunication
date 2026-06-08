@@ -7,7 +7,9 @@
 
 import TSShared
 import Foundation
-
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 ///Mocks a GET only http server that can answer to download requests
 ///

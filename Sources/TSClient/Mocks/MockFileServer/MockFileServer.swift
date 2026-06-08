@@ -7,7 +7,9 @@
 
 import TSShared
 import Foundation
-
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 
 ///Mocks a server that can accept stream of files

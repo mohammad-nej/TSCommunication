@@ -8,7 +8,9 @@
 
 import TSShared
 import Foundation
-
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 public extension MockUpServer{
     ///Creates a mock  that runs a closure upon being called

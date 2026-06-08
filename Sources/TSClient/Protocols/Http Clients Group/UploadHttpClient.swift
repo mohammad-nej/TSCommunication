@@ -7,6 +7,9 @@
 
 
 import Foundation
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 ///a client that support streaming a file to server
 public protocol UploadHttpClient : Sendable  {

@@ -6,6 +6,9 @@
 //
 import Foundation
 import TSShared
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 public extension ClientLargeFileUploadable{
     

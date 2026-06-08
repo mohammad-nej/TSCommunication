@@ -9,7 +9,9 @@ import Foundation
 import Testing
 import TSShared
 import TSClient
-
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 extension URL{
     static let mock = URL(string: "https://fake.url")!

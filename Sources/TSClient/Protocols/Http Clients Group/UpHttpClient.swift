@@ -7,6 +7,9 @@
 
 
 import Foundation
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 ///A client that can upload data to server
 ///

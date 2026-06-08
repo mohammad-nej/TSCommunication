@@ -7,7 +7,9 @@
 
 import TSShared
 import Foundation
-
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 ///Mock server that downloads a binary Data from server
 ///

@@ -6,7 +6,9 @@
 //
 
 import Foundation
-
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 ///Extending URLSession to act as a HttpClient
 extension URLSession : HttpClient{}

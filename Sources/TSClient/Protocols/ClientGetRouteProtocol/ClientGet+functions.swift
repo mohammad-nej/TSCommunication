@@ -7,6 +7,9 @@
 
 import Foundation
 import TSShared
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 @available(iOS 13.0.0, *)
 public extension ClientGetRouteProtocol{

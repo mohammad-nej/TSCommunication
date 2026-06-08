@@ -7,7 +7,9 @@
 
 import TSShared
 import Foundation
-
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 
 public extension ClientFileDownloadable {

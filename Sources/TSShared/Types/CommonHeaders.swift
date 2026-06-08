@@ -6,7 +6,9 @@
 //
 
 import Foundation
-
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 
 ///Common HTTP headers used in requests

@@ -6,7 +6,9 @@
 //
 
 import Foundation
-
+#if os(Linux)
+import FoundationNetworking
+#endif
 public extension URLResponse {
     subscript (_ header: CommonHeader) -> String? {
         

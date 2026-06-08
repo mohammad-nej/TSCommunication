@@ -6,6 +6,9 @@
 //
 import TSShared
 import Foundation
+#if os(Linux)
+import FoundationNetworking
+#endif
 
 public extension MockDownloadServer {
     ///A mock download server that can respond to requests
