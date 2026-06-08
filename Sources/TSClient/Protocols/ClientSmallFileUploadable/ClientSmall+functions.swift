@@ -41,8 +41,11 @@ public extension ClientSmallFileUploadable{
         
         //checking the size of data
         if data.count > 25 * 1024 * 1024 { //25mb
-            
+            #if canImport(OSLog)
             logger.warning("You file is too big, consider streaming it instead.")
+            #else
+            print("You file is too big, consider streaming it instead.")
+            #endif
         }
         
         var request = URLRequest(url: url, timeoutInterval: Self.timeoutInterval)

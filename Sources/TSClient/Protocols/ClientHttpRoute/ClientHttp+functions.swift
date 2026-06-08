@@ -56,7 +56,11 @@ public extension ClientHttpRoute{
         //checking the size of data
         if encodedData.count > 25 * 1024 * 1024 { //25mb
             let mb = encodedData.count / (1024 * 1024)
+            #if canImport(OSLog)
             logger.warning("Your payload is too large: \(mb)mb.")
+            #else
+            print("Your payload is too large: \(mb)mb.")
+            #endif
         }
         
         try modify(&request)

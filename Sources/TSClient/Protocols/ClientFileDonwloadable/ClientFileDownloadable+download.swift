@@ -25,7 +25,11 @@ public extension ClientFileDownloadable {
                          config : Configuration = .default,
     modify : RequestModifier = { _ in } ) async throws -> ServerResponse<Self>{
         if Self.method != .GET  {
+            #if canImport(OSLog)
             logger.warning("HTTPMethod for \(Self.routeId) is not GET.")
+            #else
+            print("HTTPMethod for \(Self.routeId) is not GET.")
+            #endif
         }
         
         let url = try Self.path.createURL(parameters: parameters,

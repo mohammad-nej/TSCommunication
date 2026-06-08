@@ -41,7 +41,11 @@ public final class RouteRegistrar {
             return RouteId(path: serverPath, method: method)
         }
         if !ids.isEmpty{
+            #if canImport(OSLog)
             logger.warning("This Application object already has \(ids.count) routes, are you running RouteInserter more than once?")
+            #else
+            print("This Application object already has \(ids.count) routes, are you running RouteInserter more than once?")
+            #endif
         }
         
         return Set(ids)

@@ -6,8 +6,9 @@
 //
 import TSShared
 import Vapor
+#if canImport(OSLog)
 import OSLog
-
+#endif
 
 ///Can be used to group routes and add middleware to them.
 ///
@@ -52,7 +53,11 @@ public struct MiddlewareBuilder : Sendable  {
                     let (inserted , _ ) = previousIds.insert(id)
                     
                     if !inserted{
+                        #if canImport(OSLog)
                         logger.warning("Route with id: \(id.description) was added more than once. Only the first addition will be used.")
+                        #else
+                        print("Route with id: \(id.description) was added more than once. Only the first addition will be used.")
+                        #endif
                         duplicates.append(routeType.routeId)
                         continue
                     }
@@ -65,7 +70,11 @@ public struct MiddlewareBuilder : Sendable  {
                     let (inserted , _ ) = previousIds.insert(id)
                     
                     if !inserted{
+                        #if canImport(OSLog)
                         logger.warning("Route with id: \(id.description) was added more than once. Only the first addition will be used.")
+                        #else
+                            print("Route with id: \(id.description) was added more than once. Only the first addition will be used.")
+                        #endif
                         duplicates.append(routeType.routeId)
                         continue
                     }

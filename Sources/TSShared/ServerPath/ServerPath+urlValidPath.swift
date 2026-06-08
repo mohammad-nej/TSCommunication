@@ -61,7 +61,11 @@ public extension ServerPath {
             } else {
                 //in case of insufficient amount of parameters
                 guard parameterIndex < parameters.count else {
+                    #if canImport(OSLog)
                     logger.warning("Insufficient amount of parameters in path : \(self.description)")
+                    #else
+                    print("Insufficient amount of parameters in path : \(self.description)")
+                    #endif
                     urlPath.append(part.value)
                     parameterIndex += 1
                     continue
@@ -74,7 +78,11 @@ public extension ServerPath {
         
         //in case of extra parameters
         if parameters.count > parameterIndex {
+            #if canImport(OSLog)
             logger.warning("Extra amount of parameters in path : \(self.description), Expected : \(parameters.count) , received : \(parameterIndex.description)")
+            #else
+            print("Extra amount of parameters in path : \(self.description), Expected : \(parameters.count) , received : \(parameterIndex.description)")
+            #endif
             urlPath.append(contentsOf: parameters[parameterIndex...])
         }
         
