@@ -5,6 +5,10 @@ The main idea is to create a single type per each route in your server. This typ
 
 Because targets in this package work independent of each other (except `TSShared`), You can use this package even if your server is not written using Swift.
 
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmohammad-nej%2FTSCommunication%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/mohammad-nej/TSCommunication)
+
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmohammad-nej%2FTSCommunication%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/mohammad-nej/TSCommunication)
+
 ## Pros:
 Using this package has it's pros and cons
 ### In General
